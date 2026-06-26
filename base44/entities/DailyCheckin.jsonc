@@ -1,0 +1,32 @@
+{
+  "name": "DailyCheckin",
+  "type": "object",
+  "properties": {
+    "profile_id": {
+      "type": "string"
+    },
+    "checkin_date": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "made_progress",
+        "got_stuck",
+        "no_time",
+        "made_money"
+      ]
+    },
+    "money_amount": {
+      "type": "number"
+    },
+    "sparky_response": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "profile_id",
+    "checkin_date",
+    "status"
+  ]
+}

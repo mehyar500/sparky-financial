@@ -1,0 +1,79 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "situation": {
+      "type": "string"
+    },
+    "timeline": {
+      "type": "string"
+    },
+    "hours_per_week": {
+      "type": "string"
+    },
+    "selected_assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "extra_skills_text": {
+      "type": "string"
+    },
+    "asset_counts": {
+      "type": "object"
+    },
+    "option1": {
+      "type": "object"
+    },
+    "option2": {
+      "type": "object"
+    },
+    "chosen_option": {
+      "type": "object"
+    },
+    "action_plan": {
+      "type": "object"
+    },
+    "progress_percent": {
+      "type": "number"
+    },
+    "tasks_completed": {
+      "type": "number"
+    },
+    "total_tasks": {
+      "type": "number"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "money_earned": {
+      "type": "number"
+    },
+    "first_goal_amount": {
+      "type": "number"
+    },
+    "confidence_score": {
+      "type": "number"
+    },
+    "is_paid": {
+      "type": "boolean"
+    },
+    "onboarding_complete": {
+      "type": "boolean"
+    }
+  },
+  "required": []
+}
