@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import MobileShell from '../components/MobileShell';
 import TealButton from '../components/TealButton';
-import { CheckSquare, Square, Send, DollarSign, Target, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { CheckSquare, Square, Send, DollarSign, Zap } from 'lucide-react';
 import { getSession, saveSession } from '../lib/onboardingState';
 import { base44 } from '../api/base44Client';
+import StreakCalendar, { saveCheckinToHistory } from '../components/StreakCalendar';
 
 function ConfidenceMeter({ score }) {
   return (
@@ -131,6 +132,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [showCheckin, setShowCheckin] = useState(true);
   const [celebrating, setCelebrating] = useState(false);
+  const [checkinHistory, setCheckinHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('fd_checkin_history') || '{}'); } catch { return {}; }
+  });
   const chatRef = useRef(null);
 
   useEffect(() => {
@@ -163,6 +167,9 @@ export default function Dashboard() {
       made_money: `🎉🎉 AMAZING! You made money! This is HUGE, ${session.name}! Tell me how much and let's celebrate properly!`,
     };
     if (status === 'made_money') setCelebrating(true);
+    const todayStr = new Date().toISOString().slice(0, 10);
+    saveCheckinToHistory(todayStr, status);
+    setCheckinHistory(prev => ({ ...prev, [todayStr]: status }));
     setMessages(prev => [...prev, { role: 'sparky', content: responses[status] }]);
   };
 
@@ -235,6 +242,9 @@ Respond as Sparky — warm, brief (2-4 sentences), action-focused, and encouragi
 
         {/* Daily check-in */}
         {showCheckin && <DailyCheckin onCheckin={handleCheckin} />}
+
+        {/* Streak calendar */}
+        <StreakCalendar checkinHistory={checkinHistory} />
 
         {/* Chat area */}
         <div className="flex-1 flex flex-col border-t border-gray-100 overflow-hidden">
