@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileShell from '../../components/MobileShell';
 import SparkyAvatar from '../../components/SparkyAvatar';
-import ChatInput from '../../components/ChatInput';
+import LocationPicker from '../../components/LocationPicker';
 import { getSession, saveSession } from '../../lib/onboardingState';
 
 export default function OnboardingLocation() {
@@ -38,7 +38,7 @@ export default function OnboardingLocation() {
       </div>
 
       <div className="px-6 pb-8">
-        <ChatInput placeholder="Tell Sparky here!" onSubmit={handleSubmit} />
+        <LocationPicker initialValue={session.location || ''} onSubmit={handleSubmit} />
       </div>
     </MobileShell>
   );
