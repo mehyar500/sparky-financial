@@ -1,7 +1,8 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
@@ -33,6 +34,10 @@ import Confetti from './pages/Confetti';
 import GreatChoice from './pages/GreatChoice';
 import ActionPlan from './pages/ActionPlan';
 import Dashboard from './pages/Dashboard';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
+import Settings from './pages/Settings';
+import WeeklyReview from './pages/WeeklyReview';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
@@ -52,6 +57,9 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
       <Route path="/onboarding/name" element={<OnboardingName />} />
       <Route path="/onboarding/location" element={<OnboardingLocation />} />
       <Route path="/onboarding/situation" element={<OnboardingSituation />} />
@@ -77,6 +85,9 @@ const AuthenticatedApp = () => {
       <Route path="/great-choice" element={<GreatChoice />} />
       <Route path="/action-plan" element={<ActionPlan />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/weekly-review" element={<WeeklyReview />} />
+      </Route>
     </Routes>
   );
 };

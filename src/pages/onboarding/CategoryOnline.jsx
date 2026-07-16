@@ -6,7 +6,7 @@ import { getSession, saveSession } from '../../lib/onboardingState';
 
 const SCREENS = [
   { prompt: 'How about some remote work?', hint: '(Pick what interests you)', icon: '💻', items: ['Become an online tutor', 'Create an online course', 'Review products online'] },
-  { prompt: 'How about some remote work?', hint: '(Pick what interests you)', icon: '💻', items: ['Create and sell art', 'Online Freelancer', 'Offer AI-powered services'] },
+  { prompt: 'How about some remote work?', hint: '(Pick what interests you)', icon: '💻', items: ['Create and sell art', 'Online Freelancer', 'Offer digital services'] },
 ];
 
 export default function CategoryOnline() {

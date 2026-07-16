@@ -41,8 +41,11 @@
     "chosen_option": {
       "type": "object"
     },
-    "action_plan": {
-      "type": "object"
+    "active_streams": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
     },
     "progress_percent": {
       "type": "number"
@@ -65,8 +68,29 @@
     "first_goal_amount": {
       "type": "number"
     },
-    "confidence_score": {
-      "type": "number"
+    "milestone_badges": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "checkin_history": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "weekly_reviews": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "stripe_customer_id": {
+      "type": "string"
+    },
+    "stripe_subscription_id": {
+      "type": "string"
     },
     "is_paid": {
       "type": "boolean"

@@ -1,47 +1,31 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import MobileShell from '../components/MobileShell';
-import SparkyAvatar from '../components/SparkyAvatar';
-import TealButton from '../components/TealButton';
-import { clearSession } from '../lib/onboardingState';
+import { Link, useNavigate } from 'react-router-dom';
+import MobileShell from '@/components/MobileShell';
+import SparkyAvatar from '@/components/SparkyAvatar';
+import GoogleIcon from '@/components/GoogleIcon';
+import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
+import { getSession } from '@/lib/onboardingState';
 
 export default function Landing() {
   const navigate = useNavigate();
-
-  const handleStart = () => {
-    clearSession();
-    navigate('/onboarding/name');
+  const { isAuthenticated } = useAuth();
+  const start = () => {
+    const session = getSession();
+    if (isAuthenticated) navigate(session?.onboarding_complete ? '/dashboard' : '/onboarding/name');
+    else base44.auth.loginWithProvider('google', `${window.location.origin}/onboarding/name`);
   };
-
-  return (
-    <MobileShell>
-      <div className="flex flex-col items-center justify-between h-full min-h-[680px] bg-white">
-        {/* Top teal wave section */}
-        <div className="w-full bg-gradient-to-b from-[#5BC8C8] to-[#7dd4d4] flex flex-col items-center pt-10 pb-10 rounded-b-[60%_30%]" style={{ minHeight: 320 }}>
-          <SparkyAvatar size={150} expression="happy" />
-        </div>
-
-        {/* Content */}
-        <div className="flex flex-col items-center px-8 py-8 gap-4 flex-1 justify-center">
-          <div className="text-center">
-            <h1 className="text-3xl font-black text-[#2c4a4a] tracking-tight">FirstDollar</h1>
-            <p className="text-[#5BC8C8] font-semibold text-base mt-1">Earn money with the things you have</p>
-          </div>
-
-          <p className="text-gray-400 text-xs font-medium tracking-widest uppercase mt-2">by stringflix™</p>
-
-          <p className="text-center text-gray-500 text-sm mt-2 italic">
-            Just got laid off? Let's help you earn your first dollar again.
-          </p>
-        </div>
-
-        {/* CTA */}
-        <div className="w-full px-8 pb-10">
-          <TealButton onClick={handleStart}>
-            Let's start by meeting your AI coach!
-          </TealButton>
-        </div>
-      </div>
-    </MobileShell>
-  );
+  return <MobileShell><div className="min-h-[680px] flex flex-col bg-white">
+    <div className="bg-[#183b3b] text-white px-7 pt-12 pb-10 rounded-b-[2.5rem]">
+      <p className="text-[#7dd4d4] text-xs font-black tracking-[.2em]">FIRSTDOLLAR</p>
+      <h1 className="text-4xl font-black leading-tight mt-5">Your plan to your first $100.</h1>
+      <p className="text-white/70 mt-4 leading-6">Pick a realistic path. Follow clear tasks. Track every dollar. Then keep going.</p>
+      <div className="mt-7"><SparkyAvatar size={110} expression="happy"/></div>
+    </div>
+    <div className="p-7 flex-1 flex flex-col justify-center">
+      <button onClick={start} className="w-full border border-gray-200 rounded-full py-3.5 font-bold text-[#183b3b] flex items-center justify-center gap-3 shadow-sm"><GoogleIcon/>Continue with Google</button>
+      <p className="text-center text-xs text-gray-400 mt-4">Sign in to save your plan and progress.</p>
+    </div>
+    <footer className="px-7 pb-7 text-center text-xs text-gray-400">A StringFlix product · <Link className="underline" to="/privacy">Privacy</Link> · <Link className="underline" to="/terms">Terms</Link></footer>
+  </div></MobileShell>;
 }

@@ -1,0 +1,6 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import MobileShell from '@/components/MobileShell';
+import { useAuth } from '@/lib/AuthContext';
+import { getSession } from '@/lib/onboardingState';
+export default function Settings(){const {user,logout}=useAuth(),s=getSession()||{};return <MobileShell><div className="min-h-[680px] bg-gray-50 p-5"><Link to="/dashboard" className="text-sm text-[#399d9d]">← Workspace</Link><h1 className="text-3xl font-black text-[#183b3b] mt-6">Settings</h1><div className="bg-white rounded-2xl p-5 mt-6"><p className="font-bold text-[#183b3b]">{user?.full_name||s.name}</p><p className="text-sm text-gray-500">{user?.email}</p><span className="inline-block bg-teal-50 text-[#287c7c] text-xs font-bold px-3 py-1 rounded-full mt-3">{s.is_paid?'FirstDollar Plus':'Free plan'}</span></div><div className="bg-white rounded-2xl mt-4 divide-y"><Link className="block p-4 text-sm" to="/privacy">Privacy Policy</Link><Link className="block p-4 text-sm" to="/terms">Terms of Service</Link><button onClick={()=>logout()} className="block p-4 text-sm text-red-500 w-full text-left">Sign out</button></div><p className="text-xs text-gray-400 mt-6">To request account and data deletion, contact Base44 support through the official support channel.</p></div></MobileShell>}
