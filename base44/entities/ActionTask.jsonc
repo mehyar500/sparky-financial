@@ -1,0 +1,54 @@
+{
+  "name": "ActionTask",
+  "type": "object",
+  "properties": {
+    "income_path_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "why_it_matters": {
+      "type": "string"
+    },
+    "estimated_minutes": {
+      "type": "number"
+    },
+    "difficulty": {
+      "type": "string"
+    },
+    "instructions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "complete",
+        "blocked",
+        "skipped"
+      ],
+      "default": "not_started"
+    },
+    "order": {
+      "type": "number"
+    },
+    "completed_at": {
+      "type": "string"
+    },
+    "blocker_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "income_path_id",
+    "title"
+  ]
+}

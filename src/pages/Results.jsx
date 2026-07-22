@@ -1,15 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import MobileShell from '@/components/MobileShell';
+import OptionSummaryCard from '@/components/results/OptionSummaryCard';
+import PaywallCTA from '@/components/results/PaywallCTA';
 import { base44 } from '@/api/base44Client';
-import { getSession, saveSession } from '@/lib/onboardingState';
+import { getMyProfile, getActiveRecSet } from '@/lib/pathData';
 
-export default function Results(){
-  const navigate=useNavigate(),[session,setSession]=useState(getSession()||{}),[loading,setLoading]=useState(false);
-  useEffect(()=>{const p=new URLSearchParams(window.location.search),id=p.get('session_id');if(!id||!session.profile_id)return;base44.functions.invoke('verifyCheckout',{sessionId:id,profileId:session.profile_id}).then(r=>{if(r.data.paid){const next={...session,is_paid:true};saveSession(next);setSession(next)}})},[]);
-  const checkout=async()=>{if(window.self!==window.top){alert('Checkout works from the published app. Open FirstDollar in a new tab to continue.');return}setLoading(true);const r=await base44.functions.invoke('createCheckout',{origin:window.location.origin,profileId:session.profile_id});window.location.href=r.data.url};
-  const choose=async opt=>{const tasks=(opt.action_steps||[]).map((t,i)=>({...t,id:String(i),done:false}));const streams=session.is_paid?[...(session.active_streams||[]),opt]:[opt];const next={...session,chosen_option:opt,active_streams:streams,tasks,total_tasks:tasks.length,tasks_completed:0,progress_percent:0,onboarding_complete:true};saveSession(next);if(session.profile_id)await base44.entities.UserProfile.update(session.profile_id,next);navigate('/dashboard')};
-  const Card=({opt,locked})=><div className="bg-white rounded-3xl p-5 text-[#183b3b] shadow-sm relative overflow-hidden">{locked&&<div className="absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center p-5 text-center"><Lock className="text-[#399d9d]"/><p className="font-black mt-3">Unlock your second path</p><p className="text-xs text-gray-500 mt-2">Plus weekly reviews and multiple income streams.</p><button onClick={checkout} className="bg-[#183b3b] text-white rounded-full px-5 py-3 mt-4 font-bold text-sm">{loading?<Loader2 className="animate-spin"/>:'Get Plus · $7.99/month'}</button></div>}<div className="text-3xl">{opt.emoji||'⚡'}</div><h2 className="font-black text-xl mt-3">{opt.title}</h2><p className="text-sm text-gray-500 mt-2">{opt.why_this_fits_you}</p><div className="flex justify-between text-xs font-bold mt-4 text-[#399d9d]"><span>{opt.income_range}</span><span>{opt.time_to_first_dollar}</span></div><button onClick={()=>choose(opt)} className="w-full bg-[#5BC8C8] text-white rounded-full py-3 font-bold mt-5">Start this path</button></div>;
-  return <MobileShell><div className="min-h-[680px] bg-[#183b3b] p-5"><p className="text-[#7dd4d4] text-xs font-bold uppercase tracking-wider">Your fastest paths</p><h1 className="text-white text-3xl font-black mt-2">Pick one. Start today.</h1><div className="space-y-4 mt-6"><Card opt={session.option1||{}}/><Card opt={session.option2||{}} locked={!session.is_paid}/></div></div></MobileShell>;
+export default function Results() {
+  const navigate = useNavigate();
+  const [recSet, setRecSet] = useState(null), [profile, setProfile] = useState(null), [loading, setLoading] = useState(true);
+  useEffect(() => { (async () => {
+    let [p, r] = await Promise.all([getMyProfile(), getActiveRecSet()]);
+    const sessionId = new URLSearchParams(window.location.search).get('session_id');
+    if (sessionId && p && !p.is_paid) {
+      const res = await base44.functions.invoke('verifyCheckout', { sessionId, profileId: p.id });
+      if (res.data.paid) p = { ...p, is_paid: true };
+    }
+    setProfile(p); setRecSet(r); setLoading(false);
+    if (!r) navigate('/onboarding/processing');
+  })(); }, []);
+  if (loading) return <MobileShell><div className="min-h-[680px] flex items-center justify-center bg-[#183b3b]"><Loader2 className="animate-spin text-[#5BC8C8]" size={32}/></div></MobileShell>;
+  const isPaid = profile?.is_paid;
+  const explore = num => isPaid ? navigate(`/explore?opt=${num}`) : null;
+  return <MobileShell><div className="min-h-[680px] bg-[#183b3b] p-5 pb-8">
+    <p className="text-[#7dd4d4] text-xs font-bold uppercase tracking-wider">Your two paths</p>
+    <h1 className="text-white text-3xl font-black mt-2">Here's what Sparky found for you.</h1>
+    <div className="space-y-4 mt-6">
+      <OptionSummaryCard option={recSet?.option_1_json} num={1} onExplore={() => explore(1)} locked={!isPaid}/>
+      <OptionSummaryCard option={recSet?.option_2_json} num={2} onExplore={() => explore(2)} locked={!isPaid}/>
+    </div>
+    <div className="grid grid-cols-2 gap-3 mt-5">
+      <button onClick={() => isPaid ? navigate('/compare') : null} disabled={!isPaid} className={`rounded-full py-3 text-sm font-bold border border-white/30 text-white ${!isPaid ? 'opacity-50' : ''}`}>Compare Both</button>
+      <button onClick={() => navigate('/different-options')} className="rounded-full py-3 text-sm font-bold border border-white/30 text-white">I Want Different Options</button>
+    </div>
+    {!isPaid && <PaywallCTA profileId={profile?.id}/>}
+  </div></MobileShell>;
 }

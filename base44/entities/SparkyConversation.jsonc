@@ -1,0 +1,21 @@
+{
+  "name": "SparkyConversation",
+  "type": "object",
+  "properties": {
+    "income_path_id": {
+      "type": "string"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "last_updated": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "income_path_id"
+  ]
+}

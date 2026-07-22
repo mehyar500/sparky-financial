@@ -1,0 +1,58 @@
+{
+  "name": "IncomePath",
+  "type": "object",
+  "properties": {
+    "selected_option_json": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "completed",
+        "replaced"
+      ],
+      "default": "active"
+    },
+    "first_goal": {
+      "type": "string"
+    },
+    "first_goal_amount": {
+      "type": "number"
+    },
+    "long_term_goal": {
+      "type": "string"
+    },
+    "income_total": {
+      "type": "number",
+      "default": 0
+    },
+    "progress_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "start_date": {
+      "type": "string"
+    },
+    "last_activity": {
+      "type": "string"
+    },
+    "last_check_in": {
+      "type": "string"
+    },
+    "user_notes": {
+      "type": "string"
+    },
+    "reason_paused": {
+      "type": "string"
+    },
+    "milestone_history": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "required": []
+}

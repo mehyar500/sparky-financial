@@ -29,6 +29,11 @@ import Processing from './pages/onboarding/Processing';
 import DiscoveryScore from './pages/onboarding/DiscoveryScore';
 import ResultsAnnounce from './pages/onboarding/ResultsAnnounce';
 import Results from './pages/Results';
+import ExploreOption from './pages/ExploreOption';
+import CompareOptions from './pages/CompareOptions';
+import DifferentOptions from './pages/DifferentOptions';
+import Pivot from './pages/Pivot';
+import MyPaths from './pages/MyPaths';
 import TimeToPick from './pages/TimeToPick';
 import Confetti from './pages/Confetti';
 import GreatChoice from './pages/GreatChoice';
@@ -80,6 +85,11 @@ const AuthenticatedApp = () => {
       <Route path="/onboarding/score" element={<DiscoveryScore />} />
       <Route path="/onboarding/results-announce" element={<ResultsAnnounce />} />
       <Route path="/results" element={<Results />} />
+      <Route path="/explore" element={<ExploreOption />} />
+      <Route path="/compare" element={<CompareOptions />} />
+      <Route path="/different-options" element={<DifferentOptions />} />
+      <Route path="/pivot" element={<Pivot />} />
+      <Route path="/paths" element={<MyPaths />} />
       <Route path="/time-to-pick" element={<TimeToPick />} />
       <Route path="/confetti" element={<Confetti />} />
       <Route path="/great-choice" element={<GreatChoice />} />

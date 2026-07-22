@@ -1,0 +1,34 @@
+{
+  "name": "RecommendationSet",
+  "type": "object",
+  "properties": {
+    "option_1_json": {
+      "type": "object"
+    },
+    "option_2_json": {
+      "type": "object"
+    },
+    "rejected_options": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "request_for_alternatives": {
+      "type": "string"
+    },
+    "date_generated": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "selected",
+        "rejected"
+      ],
+      "default": "active"
+    }
+  },
+  "required": []
+}

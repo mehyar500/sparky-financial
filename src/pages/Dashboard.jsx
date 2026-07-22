@@ -1,22 +1,61 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { CalendarDays, Settings, Trophy } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { CalendarDays, FolderKanban, Loader2, Settings } from 'lucide-react';
 import MobileShell from '@/components/MobileShell';
-import MissionCard from '@/components/workspace/MissionCard';
-import TaskCard from '@/components/workspace/TaskCard';
-import TaskDetail from '@/components/workspace/TaskDetail';
-import HelpPanel from '@/components/workspace/HelpPanel';
-import StreakCalendar, { saveCheckinToHistory } from '@/components/StreakCalendar';
+import PathHeader from '@/components/workspace/PathHeader';
+import TodayFocus from '@/components/workspace/TodayFocus';
+import TaskChecklist from '@/components/workspace/TaskChecklist';
+import TaskSheet from '@/components/workspace/TaskSheet';
+import SparkyChat from '@/components/workspace/SparkyChat';
+import CheckInCard from '@/components/workspace/CheckInCard';
 import { base44 } from '@/api/base44Client';
-import { getSession, saveSession } from '@/lib/onboardingState';
+import { getMyProfile, getActivePath, getTasks, touchPath } from '@/lib/pathData';
 
-const statuses=[['made_progress','Made progress'],['got_stuck','Got stuck'],['no_time','No time'],['made_money','Made money 💰']];
-export default function Dashboard(){
-  const [s,setS]=useState(getSession()||{}),[active,setActive]=useState(null),[amount,setAmount]=useState(''),[checkin,setCheckin]=useState(null),[reply,setReply]=useState('');
-  const persist=async next=>{setS(next);saveSession(next);if(next.profile_id)await base44.entities.UserProfile.update(next.profile_id,next)};
-  const toggle=i=>{const tasks=s.tasks.map((t,n)=>n===i?{...t,done:!t.done}:t),done=tasks.filter(t=>t.done).length;persist({...s,tasks,tasks_completed:done,progress_percent:Math.round(done/tasks.length*100)})};
-  const logMoney=()=>{const earned=(s.money_earned||0)+Number(amount),badges=[...(s.milestone_badges||[])];[['First Dollar',1],['First $25',25],['First $50',50],['First $100',100]].forEach(([b,n])=>{if(earned>=n&&!badges.includes(b))badges.push(b)});persist({...s,money_earned:earned,milestone_badges:badges});setAmount('')};
-  const doCheckin=async status=>{const date=new Date().toISOString().slice(0,10),history=[...(s.checkin_history||[]).filter(x=>x.date!==date),{date,status}];saveCheckinToHistory(date,status);setCheckin(status);const r=await base44.integrations.Core.InvokeLLM({prompt:`You are Sparky. The user checked in: ${status}. Their path is ${(s.chosen_option||{}).title}; ${s.tasks_completed||0} tasks completed and $${s.money_earned||0} earned. Give one empathetic sentence and one tiny specific next action. No hype or buzzwords.`});setReply(r);persist({...s,checkin_history:history})};
-  const history=Object.fromEntries((s.checkin_history||[]).map(x=>[x.date,x.status]));
-  return <MobileShell><div className="min-h-[680px] bg-gray-50 pb-8"><div className="bg-[#183b3b] px-5 pt-4 flex justify-end gap-4"><Link to="/weekly-review" aria-label="Weekly review"><CalendarDays className="text-white/70" size={19}/></Link><Link to="/settings" aria-label="Settings"><Settings className="text-white/70" size={19}/></Link></div><MissionCard session={s}/><main className="p-4 space-y-4">{s.is_paid&&<section className="bg-white border border-gray-100 rounded-2xl p-4"><div className="flex justify-between items-center"><div><p className="text-xs font-bold text-[#399d9d]">INCOME STREAMS</p><p className="font-black text-[#183b3b] mt-1">{(s.active_streams||[]).length || 1} active</p></div><Link to="/results" className="text-xs font-bold bg-teal-50 text-[#287c7c] rounded-full px-3 py-2">+ Add stream</Link></div></section>}<section><p className="text-xs font-black text-[#399d9d] uppercase tracking-wider mb-3">Today's tasks</p><div className="space-y-3">{(s.tasks||[]).map((t,i)=><TaskCard key={t.id||i} task={t} onToggle={()=>toggle(i)} onOpen={()=>setActive(t)}/>)}</div></section><HelpPanel session={s}/><section className="bg-white rounded-2xl p-4"><h2 className="font-black text-[#183b3b]">Daily check-in</h2><div className="grid grid-cols-2 gap-2 mt-3">{statuses.map(([v,l])=><button key={v} onClick={()=>doCheckin(v)} className={`rounded-xl p-2 text-xs font-bold border ${checkin===v?'bg-[#5BC8C8] text-white':'border-gray-200 text-gray-600'}`}>{l}</button>)}</div>{reply&&<p className="text-sm text-gray-600 bg-gray-50 rounded-xl p-3 mt-3">{reply}</p>}</section><section className="bg-white rounded-2xl p-4"><div className="flex items-center gap-2"><Trophy size={17} className="text-amber-500"/><h2 className="font-black text-[#183b3b]">Money</h2></div><p className="text-2xl font-black text-[#183b3b] mt-3">${s.money_earned||0} <span className="text-sm text-gray-400">/ $100</span></p><div className="flex gap-2 mt-3"><input value={amount} onChange={e=>setAmount(e.target.value)} type="number" placeholder="Amount earned" className="min-w-0 flex-1 border rounded-xl px-3 text-sm"/><button onClick={logMoney} className="bg-[#183b3b] text-white rounded-xl px-4 py-2 text-sm font-bold">Log</button></div><div className="flex gap-2 overflow-x-auto mt-4">{(s.milestone_badges||[]).map(b=><span key={b} className="whitespace-nowrap bg-amber-50 text-amber-700 rounded-full px-3 py-1 text-xs font-bold">🏆 {b}</span>)}</div></section><section className="bg-white rounded-2xl"><StreakCalendar checkinHistory={history}/></section>{(s.money_earned||0)>=100&&<section className="bg-[#183b3b] text-white rounded-2xl p-5"><p className="text-2xl">🏆</p><h2 className="text-xl font-black mt-2">You reached your first $100.</h2><p className="text-sm text-white/70 mt-2">Keep this stream growing or add another one.</p><div className="flex gap-2 mt-4"><button className="bg-[#5BC8C8] rounded-full px-4 py-2 text-xs font-bold">Build toward $500</button><Link to="/results" className="border border-white/30 rounded-full px-4 py-2 text-xs font-bold">New path</Link></div></section>}</main><TaskDetail task={active} onClose={()=>setActive(null)}/></div></MobileShell>;
+export default function Dashboard() {
+  const navigate = useNavigate();
+  const [data, setData] = useState({ loading: true, profile: null, path: null, tasks: [] });
+  const [activeTask, setActiveTask] = useState(null);
+
+  const load = async () => {
+    const [profile, path] = await Promise.all([getMyProfile(), getActivePath()]);
+    if (!path) { navigate('/results'); return; }
+    const tasks = await getTasks(path.id);
+    setData({ loading: false, profile, path, tasks });
+  };
+  useEffect(() => { load(); }, []);
+
+  const updateTask = async (task, changes) => {
+    await base44.entities.ActionTask.update(task.id, changes);
+    const tasks = data.tasks.map(t => t.id === task.id ? { ...t, ...changes } : t);
+    const done = tasks.filter(t => t.status === 'complete').length;
+    const path = await touchPath(data.path.id, { progress_percentage: Math.round(done / tasks.length * 100) });
+    setData(d => ({ ...d, tasks, path }));
+    if (activeTask?.id === task.id) setActiveTask({ ...task, ...changes });
+  };
+
+  const updatePath = async changes => {
+    const path = await touchPath(data.path.id, changes);
+    setData(d => ({ ...d, path }));
+  };
+
+  if (data.loading) return <MobileShell><div className="min-h-[680px] flex items-center justify-center bg-[#183b3b]"><Loader2 className="animate-spin text-[#5BC8C8]" size={32}/></div></MobileShell>;
+  const { profile, path, tasks } = data;
+  const nextTask = tasks.find(t => t.status === 'in_progress') || tasks.find(t => t.status === 'not_started') || tasks.find(t => t.status === 'blocked');
+
+  return <MobileShell><div className="min-h-[680px] bg-gray-50 pb-8">
+    <div className="bg-[#183b3b] px-5 pt-4 flex justify-end gap-4">
+      <Link to="/paths" aria-label="My paths"><FolderKanban className="text-white/70" size={19}/></Link>
+      <Link to="/weekly-review" aria-label="Weekly review"><CalendarDays className="text-white/70" size={19}/></Link>
+      <Link to="/settings" aria-label="Settings"><Settings className="text-white/70" size={19}/></Link>
+    </div>
+    <PathHeader path={path}/>
+    <main className="p-4 space-y-4">
+      <CheckInCard profile={profile} path={path} tasks={tasks} nextTask={nextTask} onPathUpdate={updatePath}/>
+      <TodayFocus task={nextTask} onOpen={() => setActiveTask(nextTask)}/>
+      <TaskChecklist tasks={tasks} onOpen={setActiveTask}/>
+      <SparkyChat profile={profile} path={path} tasks={tasks}/>
+      <button onClick={() => navigate('/pivot')} className="w-full text-gray-400 text-xs font-bold py-2">I want another path</button>
+    </main>
+    <TaskSheet task={activeTask} profile={profile} path={path} tasks={tasks} onClose={() => setActiveTask(null)} onUpdate={updateTask}/>
+  </div></MobileShell>;
 }

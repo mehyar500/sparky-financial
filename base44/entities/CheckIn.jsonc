@@ -1,0 +1,32 @@
+{
+  "name": "CheckIn",
+  "type": "object",
+  "properties": {
+    "income_path_id": {
+      "type": "string"
+    },
+    "check_in_date": {
+      "type": "string"
+    },
+    "progress_response": {
+      "type": "string"
+    },
+    "amount_earned": {
+      "type": "number"
+    },
+    "blocker": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "next_recommended_action": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "income_path_id",
+    "check_in_date",
+    "progress_response"
+  ]
+}
