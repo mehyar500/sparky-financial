@@ -30,7 +30,7 @@ export async function startPath(recSet, option, profile) {
   const path = await base44.entities.IncomePath.create({
     selected_option_json: option, status: 'active',
     first_goal: plan.first_goal, first_goal_amount: plan.first_goal_amount || 100,
-    long_term_goal: plan.long_term_goal, income_total: 0, progress_percentage: 0,
+    long_term_goal: plan.long_term_goal, tip: plan.tip || '', income_total: 0, progress_percentage: 0,
     start_date: now, last_activity: now, milestone_history: []
   });
   await base44.entities.ActionTask.bulkCreate(plan.tasks.map(t => ({ ...t, income_path_id: path.id, status: 'not_started' })));

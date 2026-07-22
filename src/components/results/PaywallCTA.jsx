@@ -1,22 +1,13 @@
 import React, { useState } from 'react';
-import { Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { Loader2, Lock } from 'lucide-react';
+import { startCheckout } from '@/lib/checkout';
 
 export default function PaywallCTA({ profileId }) {
   const [loading, setLoading] = useState(false);
-  const checkout = async () => {
-    if (window.self !== window.top) { alert('Checkout works from the published app. Open FirstDollar in a new tab to continue.'); return; }
-    setLoading(true);
-    const r = await base44.functions.invoke('createCheckout', { origin: window.location.origin, profileId });
-    window.location.href = r.data.url;
-  };
+  const go = async () => { setLoading(true); await startCheckout(profileId); setLoading(false); };
   return (
-    <div className="bg-white/10 border border-white/20 rounded-3xl p-5 mt-5 text-center">
-      <p className="text-white font-black">Ready to start earning?</p>
-      <p className="text-white/70 text-sm mt-2">Unlock my personalized action plan and ongoing Sparky coaching — $7.99/month.</p>
-      <button onClick={checkout} className="w-full bg-[#5BC8C8] text-white rounded-full py-3.5 font-bold mt-4 flex items-center justify-center">
-        {loading ? <Loader2 className="animate-spin"/> : 'Unlock My Action Plan'}
-      </button>
-    </div>
+    <button onClick={go} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-4 font-bold flex items-center justify-center gap-2 text-sm">
+      {loading ? <Loader2 className="animate-spin" size={18}/> : <><Lock size={15} className="flex-shrink-0"/> Unlock my personalized plans &amp; coaching for $7.99/month</>}
+    </button>
   );
 }

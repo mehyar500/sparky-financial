@@ -1,97 +1,105 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MobileShell from '../components/MobileShell';
-import TealButton from '../components/TealButton';
-import ChatInput from '../components/ChatInput';
-import { ChevronDown } from 'lucide-react';
-import { getSession, saveSession } from '../lib/onboardingState';
+import { ChevronDown, Loader2 } from 'lucide-react';
+import MobileShell from '@/components/MobileShell';
+import WaveHeader from '@/components/WaveHeader';
+import SparkyImage from '@/components/SparkyImage';
+import { base44 } from '@/api/base44Client';
+import { getSession } from '@/lib/onboardingState';
+import { getMyProfile, getActiveRecSet, getActivePath, getTasks, startPath } from '@/lib/pathData';
 
 export default function ActionPlan() {
   const navigate = useNavigate();
-  const session = getSession() || {};
-  const chosen = session.chosen_option || session.option1 || {};
-  const [step, setStep] = useState('overview'); // 'overview' | 'pick_task'
+  const [state, setState] = useState({ loading: true, building: false, path: null, tasks: [] });
+  const [step, setStep] = useState('overview'); // 'overview' | 'pick'
+  const chosen = (getSession() || {}).chosen_option || {};
 
-  const steps = chosen.action_steps || ['Take 3 photos', 'Create a listing', 'Share locally', 'Respond to inquiries'];
-  const tip = 'Simple photos work better than perfect photos.';
+  useEffect(() => { (async () => {
+    const [profile, recSet, existing] = await Promise.all([getMyProfile(), getActiveRecSet(), getActivePath()]);
+    let path = existing;
+    if (path && chosen.title && path.selected_option_json?.title !== chosen.title) path = null;
+    if (!path) {
+      if (!chosen.title) { navigate('/results'); return; }
+      setState(s => ({ ...s, building: true }));
+      path = await startPath(recSet, chosen, profile);
+    }
+    const tasks = await getTasks(path.id);
+    setState({ loading: false, building: false, path, tasks });
+  })(); }, []);
 
-  const handleStartPlan = () => {
-    const tasks = steps.map((s, i) => ({ id: i, label: s, done: false }));
-    saveSession({
-      ...session,
-      tasks,
-      total_tasks: tasks.length,
-      tasks_completed: 0,
-      progress_percent: 0,
-      first_goal_amount: 50,
-      money_earned: 0,
-      confidence_score: 30,
-      onboarding_complete: true,
-    });
+  const pickTask = async task => {
+    await base44.entities.ActionTask.update(task.id, { status: 'in_progress' });
     navigate('/dashboard');
   };
 
-  if (step === 'pick_task') {
-    return (
-      <MobileShell>
-        <div className="w-full bg-gradient-to-b from-[#5BC8C8] to-[#7dd4d4] rounded-b-[50%_25%]" style={{ minHeight: 80 }} />
-        <div className="flex-1 flex flex-col px-8 pt-4 pb-4">
-          <div className="flex-1 flex flex-col justify-center gap-1">
-            {steps.map((s, i) => (
-              <button
-                key={i}
-                onClick={handleStartPlan}
-                className="w-full py-4 border-b border-gray-100 flex flex-col items-center hover:bg-teal-50 transition-colors rounded-lg"
-              >
-                <span className="text-[#5BC8C8] font-bold text-sm">{i + 1}.</span>
-                <span className="text-[#2c4a4a] font-semibold text-sm mt-0.5">{s}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="px-6 pb-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full border-2 border-[#5BC8C8] flex items-center justify-center text-[#5BC8C8] text-sm">+</div>
-            <span className="text-gray-400 text-sm">Pick one to start!</span>
-          </div>
-        </div>
-      </MobileShell>
-    );
-  }
-
-  return (
-    <MobileShell>
-      <div className="flex flex-col h-full min-h-[680px] bg-[#2c4a4a]">
-        <div className="w-full bg-gradient-to-b from-[#5BC8C8] to-[#4ab0b0] rounded-b-[50%_25%]" style={{ minHeight: 60 }} />
-        <div className="flex flex-col flex-1 px-6 pt-4 pb-4 overflow-y-auto">
-          {/* Header */}
-          <div className="text-center mb-4">
-            <p className="text-[#5BC8C8] text-sm font-semibold">{chosen.title}</p>
-            <p className="text-white font-bold text-lg mt-1">Your First Goal</p>
-            <ChevronDown className="text-[#5BC8C8] mx-auto" size={18} />
-            <p className="text-white font-bold text-xl">Earn your first {chosen.first_goal || '$50'}<br />this week.</p>
-          </div>
-
-          {/* Checklist */}
-          <div className="bg-[#1e3535] rounded-2xl p-4 mb-3">
-            <p className="text-[#5BC8C8] text-sm font-bold text-center mb-2">Action Checklist</p>
-            <ChevronDown className="text-[#5BC8C8] mx-auto mb-2" size={16} />
-            <div className="flex flex-col gap-2">
-              {steps.map((s, i) => (
-                <div key={i} className="flex items-start gap-2">
-                  <div className="w-2 h-2 rounded-sm bg-[#5BC8C8] mt-1.5 flex-shrink-0" />
-                  <p className="text-white font-bold text-sm">{s}</p>
-                </div>
-              ))}
-            </div>
-            <p className="text-gray-400 text-xs text-center mt-3 italic">Tip:<br />"{tip}"</p>
-          </div>
-
-          <div className="mt-auto">
-            <TealButton onClick={() => setStep('pick_task')}>Let's start here!</TealButton>
-          </div>
+  if (state.building) {
+    return <MobileShell>
+      <div className="flex flex-col min-h-[680px] bg-white">
+        <WaveHeader height={80}/>
+        <div className="flex flex-col items-center flex-1 justify-center px-8 text-center pb-10">
+          <p className="text-[#5BC8C8] font-bold text-base">Just a moment!</p>
+          <p className="text-[#1e2f2f] font-black text-xl mt-3 leading-snug">Sparky is building your personalized step-by-step action plan.</p>
+          <SparkyImage pose="thinking" size={200} className="mt-8"/>
         </div>
       </div>
-    </MobileShell>
-  );
+    </MobileShell>;
+  }
+  if (state.loading) return <MobileShell><div className="min-h-[680px] flex items-center justify-center bg-[#2c4a4a]"><Loader2 className="animate-spin text-[#5BC8C8]" size={32}/></div></MobileShell>;
+
+  const { path, tasks } = state;
+  const option = path.selected_option_json || {};
+  const optNum = option.option_number || 1;
+
+  if (step === 'pick') {
+    return <MobileShell>
+      <div className="flex flex-col min-h-[680px] bg-white">
+        <WaveHeader height={80}/>
+        <div className="flex-1 flex flex-col justify-center px-8 py-4 gap-1">
+          {tasks.map((t, i) => (
+            <button key={t.id} onClick={() => pickTask(t)} className="w-full py-3.5 border-b border-gray-100 flex flex-col items-center hover:bg-teal-50 transition-colors rounded-lg">
+              <span className="text-[#5BC8C8] font-bold text-sm">{i + 1}.</span>
+              <span className="text-[#2c4a4a] font-semibold text-sm mt-0.5 leading-snug">{t.title}</span>
+            </button>
+          ))}
+        </div>
+        <div className="px-6 pb-6 flex items-center gap-2">
+          <div className="w-9 h-9 rounded-full border-2 border-[#5BC8C8] flex items-center justify-center text-[#5BC8C8] text-lg flex-shrink-0">+</div>
+          <button onClick={() => navigate('/dashboard')} className="flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-400 text-left hover:border-[#5BC8C8] transition-colors">Pick one to start!</button>
+        </div>
+      </div>
+    </MobileShell>;
+  }
+
+  return <MobileShell>
+    <div className="flex flex-col min-h-[680px] bg-[#2c4a4a]">
+      <WaveHeader height={70}>
+        <p className="text-[#1e5555] font-bold text-sm text-center">Option {optNum} / {option.title}</p>
+      </WaveHeader>
+      <div className="flex flex-col flex-1 px-6 pt-5 pb-6 overflow-y-auto">
+        <div className="text-center">
+          <p className="text-white font-black text-xl">Your First Goal</p>
+          <ChevronDown className="text-[#5BC8C8] mx-auto mt-0.5" size={18}/>
+          <p className="text-white font-bold text-lg mt-1">Earn your first ${path.first_goal_amount || 100} this week.</p>
+        </div>
+
+        <div className="bg-[#1e3535] rounded-2xl p-4 mt-6">
+          <p className="text-[#5BC8C8] text-sm font-bold text-center">Action Checklist</p>
+          <ChevronDown className="text-[#5BC8C8] mx-auto mt-1 mb-2" size={16}/>
+          <div className="flex flex-col gap-2.5">
+            {tasks.map(t => (
+              <div key={t.id} className="flex items-start gap-2">
+                <div className="w-2 h-2 rounded-sm bg-[#5BC8C8] mt-1.5 flex-shrink-0"/>
+                <p className="text-white font-bold text-sm leading-snug">{t.title}</p>
+              </div>
+            ))}
+          </div>
+          {path.tip && <p className="text-gray-400 text-xs text-center mt-4 italic">Tip:<br/>"{path.tip}"</p>}
+        </div>
+
+        <div className="mt-auto pt-5">
+          <button onClick={() => setStep('pick')} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-3.5 font-bold hover:bg-[#7dd4d4] transition-colors">Let's start here!</button>
+        </div>
+      </div>
+    </div>
+  </MobileShell>;
 }

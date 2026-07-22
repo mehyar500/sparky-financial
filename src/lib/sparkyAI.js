@@ -102,13 +102,14 @@ export async function generateActionPlan(option, profile) {
     prompt: `You are Sparky, a practical income coach. The user selected this income path: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
 ${SAFETY_RULES}
-Create a personalized action plan specific to THIS opportunity and THIS user (never generic tasks). Include a first-$100 goal (first_goal, plus first_goal_amount as a number like 50 or 100), a longer-term goal, and 3-7 ordered starter tasks. Each task needs: title, description, why_it_matters, estimated_minutes (number), difficulty (Easy/Medium/Hard), instructions (3-5 short concrete steps), order (number starting at 1).`,
+Create a personalized action plan specific to THIS opportunity and THIS user (never generic tasks). Include a first-$100 goal (first_goal, plus first_goal_amount as a number like 50 or 100), a longer-term goal, and 3-7 ordered starter tasks. Each task needs: title, description, why_it_matters, estimated_minutes (number), difficulty (Easy/Medium/Hard), instructions (3-5 short concrete steps), order (number starting at 1). Also include "tip": one short, practical, encouraging tip quote (one sentence) specific to this plan.`,
     response_json_schema: {
       type: 'object',
       properties: {
         first_goal: { type: 'string' },
         first_goal_amount: { type: 'number' },
         long_term_goal: { type: 'string' },
+        tip: { type: 'string' },
         tasks: {
           type: 'array',
           items: {

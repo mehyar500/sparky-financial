@@ -7,10 +7,11 @@ export default function Confetti() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const duration = 2500;
+    const duration = 1800;
     const end = Date.now() + duration;
     const colors = ['#5BC8C8', '#FFD700', '#FF6B9D', '#4ab5b5', '#ffffff'];
 
+    confetti({ particleCount: 120, spread: 100, origin: { x: 0.5, y: 0.5 }, colors });
     const frame = () => {
       confetti({ particleCount: 6, angle: 60, spread: 55, origin: { x: 0 }, colors });
       confetti({ particleCount: 6, angle: 120, spread: 55, origin: { x: 1 }, colors });
@@ -18,7 +19,7 @@ export default function Confetti() {
     };
     frame();
 
-    const timer = setTimeout(() => navigate('/great-choice'), 2800);
+    const timer = setTimeout(() => navigate('/great-choice'), 2100);
     return () => clearTimeout(timer);
   }, []);
 

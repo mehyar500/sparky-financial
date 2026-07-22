@@ -24,6 +24,9 @@
     "long_term_goal": {
       "type": "string"
     },
+    "tip": {
+      "type": "string"
+    },
     "income_total": {
       "type": "number",
       "default": 0
