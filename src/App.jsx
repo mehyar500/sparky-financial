@@ -35,6 +35,7 @@ import Confetti from './pages/Confetti';
 import GreatChoice from './pages/GreatChoice';
 import ActionPlan from './pages/ActionPlan';
 import Dashboard from './pages/Dashboard';
+import MyPaths from './pages/MyPaths';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
 import Settings from './pages/Settings';
@@ -91,6 +92,7 @@ const AuthenticatedApp = () => {
       <Route path="/great-choice" element={<GreatChoice />} />
       <Route path="/action-plan" element={<ActionPlan />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/my-paths" element={<MyPaths />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/weekly-review" element={<WeeklyReview />} />
       </Route>

@@ -27,9 +27,13 @@ export default function Processing() {
 
   useEffect(() => { const run = async () => { setError(''); const s = getSession() || {}; try {
     const user = await base44.auth.me();
-    const existing = await base44.entities.UserProfile.filter({ created_by_id: user.id });
-    const profileData = { name: s.name, location: s.location, situation: s.situation, timeline: s.timeline, hours_per_week: s.hours_per_week, selected_assets: s.selected_assets, extra_skills_text: s.extra_skills_text, onboarding_complete: true };
-    const profile = existing[0] ? await base44.entities.UserProfile.update(existing[0].id, profileData) : await base44.entities.UserProfile.create(profileData);
+    const existing = await base44.entities.UserProfile.filter({ created_by_id: user.id }, '-updated_date', 1);
+    const prev = existing[0];
+    // Each onboarding run creates a fresh profile for its own path; carry over payment entitlements.
+    const profile = await base44.entities.UserProfile.create({
+      name: s.name, location: s.location, situation: s.situation, timeline: s.timeline, hours_per_week: s.hours_per_week, selected_assets: s.selected_assets, extra_skills_text: s.extra_skills_text, onboarding_complete: true,
+      is_paid: prev?.is_paid || false, stripe_customer_id: prev?.stripe_customer_id || '', stripe_subscription_id: prev?.stripe_subscription_id || ''
+    });
     const result = await generateOptions(profile);
     await base44.entities.RecommendationSet.create({ option_1_json: result.option_1, option_2_json: result.option_2, rejected_options: [], date_generated: new Date().toISOString(), status: 'active' });
     saveSession({ ...s, profile_id: profile.id });

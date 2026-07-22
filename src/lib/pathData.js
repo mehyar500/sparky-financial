@@ -1,6 +1,10 @@
 import { base44 } from '@/api/base44Client';
 import { generateActionPlan } from '@/lib/sparkyAI';
 
+export const ACTIVE_PATH_KEY = 'sparky_active_path_id';
+export function getActivePathId() { try { return localStorage.getItem(ACTIVE_PATH_KEY); } catch { return null; } }
+export function setActivePathId(id) { try { localStorage.setItem(ACTIVE_PATH_KEY, id); } catch {} }
+
 export async function getMyProfile() {
   const user = await base44.auth.me();
   const rows = await base44.entities.UserProfile.filter({ created_by_id: user.id }, '-updated_date', 1);
@@ -13,18 +17,28 @@ export async function getActiveRecSet() {
 }
 
 export async function getActivePath() {
+  const storedId = getActivePathId();
+  if (storedId) {
+    try {
+      const path = await base44.entities.IncomePath.get(storedId);
+      if (path && path.status === 'active') return path;
+    } catch { /* stored path gone — fall back below */ }
+  }
   const rows = await base44.entities.IncomePath.filter({ status: 'active' }, '-updated_date', 1);
   return rows[0] || null;
+}
+
+export async function getAllPaths() {
+  const user = await base44.auth.me();
+  return await base44.entities.IncomePath.filter({ created_by_id: user.id }, '-last_activity');
 }
 
 export async function getTasks(pathId) {
   return await base44.entities.ActionTask.filter({ income_path_id: pathId }, 'order');
 }
 
-// Choose an option: pause any current path, generate a real AI plan, create IncomePath + tasks.
+// Choose an option: generate a real AI plan, create IncomePath + tasks. Existing paths stay untouched.
 export async function startPath(recSet, option, profile) {
-  const current = await getActivePath();
-  if (current) await base44.entities.IncomePath.update(current.id, { status: 'paused', reason_paused: 'Switched to a new path' });
   const plan = await generateActionPlan(option, profile);
   const now = new Date().toISOString();
   const path = await base44.entities.IncomePath.create({
@@ -35,6 +49,7 @@ export async function startPath(recSet, option, profile) {
   });
   await base44.entities.ActionTask.bulkCreate(plan.tasks.map(t => ({ ...t, income_path_id: path.id, status: 'not_started' })));
   if (recSet) await base44.entities.RecommendationSet.update(recSet.id, { status: 'selected' });
+  setActivePathId(path.id);
   return path;
 }
 

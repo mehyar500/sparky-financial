@@ -57,7 +57,9 @@ export default function Dashboard() {
   return <MobileShell>
     <div className="flex flex-col min-h-[680px] bg-white">
       <div className="w-full bg-gradient-to-b from-[#5BC8C8] to-[#7dd4d4] rounded-b-[50%_25%] px-6 pt-5 pb-8 text-center relative flex-shrink-0">
+        <Link to="/my-paths" aria-label="My Paths" className="absolute left-4 top-4 text-white/90 text-xs font-bold">🗂️ My Paths</Link>
         <Link to="/settings" aria-label="Settings" className="absolute right-4 top-4"><Settings size={17} className="text-white/80"/></Link>
+        <Link to="/my-paths" className="inline-block bg-[#1e5555] text-white text-[11px] font-bold px-3 py-1 rounded-full mb-1.5 max-w-[220px] truncate">📍 {path.selected_option_json?.title || 'My path'}</Link>
         <p className="text-[#1e5555] font-black text-lg">Progress {progress}%</p>
         <ChevronDown className="text-[#1e5555] mx-auto" size={16}/>
         <p className="text-white font-bold text-sm mt-0.5">Week 1 Goal: Earn ${path.first_goal_amount || 100}</p>
