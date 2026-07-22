@@ -40,7 +40,7 @@ export default function GreatChoice() {
       <WaveHeader height={60}/>
       <div className="flex flex-col items-center flex-1 px-6 pt-4 pb-6 overflow-y-auto">
         <SparkyImage pose="excited" size={160}/>
-        <p className="text-yellow-300 font-black text-3xl mt-3">Great Choice!</p>
+        <p className="text-yellow-300 font-black text-3xl mt-3">Great Choice! 🎉</p>
         <p className="text-[#5BC8C8] font-bold text-sm mt-2">Option {optNum}</p>
         <p className="text-white font-bold text-lg text-center leading-snug">{chosen.title}</p>
 

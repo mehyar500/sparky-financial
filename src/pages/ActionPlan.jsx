@@ -77,7 +77,7 @@ export default function ActionPlan() {
       </WaveHeader>
       <div className="flex flex-col flex-1 px-6 pt-5 pb-6 overflow-y-auto">
         <div className="text-center">
-          <p className="text-white font-black text-xl">Your First Goal</p>
+          <p className="text-white font-black text-xl">🎯 Your First Goal</p>
           <ChevronDown className="text-[#5BC8C8] mx-auto mt-0.5" size={18}/>
           <p className="text-white font-bold text-lg mt-1">Earn your first ${path.first_goal_amount || 100} this week.</p>
         </div>

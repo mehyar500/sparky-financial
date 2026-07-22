@@ -32,12 +32,12 @@ export default function Results() {
   return <MobileShell>
     <div className="flex flex-col min-h-[680px] bg-[#183b3b]">
       <WaveHeader height={95}>
-        <p className="text-[#1e5555] font-bold text-sm text-center leading-snug">Let's explore all your choices<br/>before you choose one.</p>
+        <p className="text-[#1e5555] font-bold text-sm text-center leading-snug">✨ Let's explore all your choices<br/>before you choose one.</p>
       </WaveHeader>
 
       {/* Top half — Option 1 */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6 text-center">
-        <p className="text-white font-black text-2xl leading-tight">{opt1.title}</p>
+        <p className="text-white font-black text-2xl leading-tight">💡 {opt1.title}</p>
         <ChevronUp className="text-[#5BC8C8] mt-3" size={22}/>
         <button onClick={() => open(1)} className="mt-2 bg-[#5BC8C8] text-[#183b3b] font-bold rounded-full px-12 py-3 text-sm hover:bg-[#7dd4d4] transition-colors">Option 1</button>
       </div>
@@ -53,7 +53,7 @@ export default function Results() {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6 text-center">
         <button onClick={() => open(2)} className="bg-[#5BC8C8] text-[#183b3b] font-bold rounded-full px-12 py-3 text-sm hover:bg-[#7dd4d4] transition-colors">Option 2</button>
         <ChevronDown className="text-[#5BC8C8] mt-2" size={22}/>
-        <p className="text-white font-black text-2xl leading-tight mt-3">{opt2.title}</p>
+        <p className="text-white font-black text-2xl leading-tight mt-3">💡 {opt2.title}</p>
       </div>
 
       {!isPaid && <div className="px-5 pb-6"><PaywallCTA profileId={profile?.id}/></div>}

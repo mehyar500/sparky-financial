@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronDown, Loader2, Settings } from 'lucide-react';
 import MobileShell from '@/components/MobileShell';
 import ChatInput from '@/components/ChatInput';
+import ChangeOptionDialog from '@/components/ChangeOptionDialog';
 import { base44 } from '@/api/base44Client';
 import { askSparky } from '@/lib/sparkyAI';
 import { getMyProfile, getActivePath, getTasks, touchPath } from '@/lib/pathData';
@@ -11,6 +12,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [data, setData] = useState({ loading: true, profile: null, path: null, tasks: [] });
   const [chat, setChat] = useState(null); // { question, answer, loading }
+  const [changeOpen, setChangeOpen] = useState(false);
+  const [changing, setChanging] = useState(false);
 
   useEffect(() => { (async () => {
     const [profile, path] = await Promise.all([getMyProfile(), getActivePath()]);
@@ -25,6 +28,13 @@ export default function Dashboard() {
     const done = tasks.filter(t => t.status === 'complete').length;
     const path = await touchPath(data.path.id, { progress_percentage: Math.round(done / tasks.length * 100) });
     setData(d => ({ ...d, tasks, path }));
+    setChat(null);
+  };
+
+  const confirmChange = async () => {
+    setChanging(true);
+    await touchPath(data.path.id, { status: 'paused', reason_paused: 'User wants different options' });
+    navigate('/results');
   };
 
   const ask = async question => {
@@ -54,7 +64,7 @@ export default function Dashboard() {
       </div>
 
       <div className="px-6 mt-5 text-center">
-        <p className="text-[#2c9a9a] font-black text-base leading-snug">Focus Today: {focus ? focus.title : 'All tasks complete! Great work.'}</p>
+        <p className="text-[#2c9a9a] font-black text-base leading-snug">🔥 Focus Today: {focus ? focus.title : 'All tasks complete! Great work.'}</p>
       </div>
 
       {focus && (
@@ -80,9 +90,11 @@ export default function Dashboard() {
               : <p className="text-[#1e2f2f] text-sm leading-relaxed bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 whitespace-pre-line">{chat.answer}</p>}
           </div>
         )}
-        <p className="text-[#5BC8C8] text-sm font-bold text-center mb-2.5">Ask Sparky for help with your current plan…</p>
+        <p className="text-[#5BC8C8] text-sm font-bold text-center mb-2.5">🤖 Ask Sparky for help with your current plan…</p>
         <ChatInput placeholder="Need help with..." onSubmit={ask}/>
+        <button onClick={() => setChangeOpen(true)} className="w-full text-[#5BC8C8] text-xs font-bold text-center mt-4">↩ I want a different option 🤖</button>
       </div>
     </div>
+    <ChangeOptionDialog open={changeOpen} loading={changing} onConfirm={confirmChange} onCancel={() => setChangeOpen(false)}/>
   </MobileShell>;
 }
