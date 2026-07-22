@@ -4,13 +4,16 @@ import MobileShell from '@/components/MobileShell';
 import ChangeOptionDialog from '@/components/ChangeOptionDialog';
 import { useAuth } from '@/lib/AuthContext';
 import { getSession } from '@/lib/onboardingState';
-import { getActivePath, touchPath } from '@/lib/pathData';
+import { getActivePath, getMyProfile, touchPath } from '@/lib/pathData';
 
 export default function Settings() {
   const { user, logout } = useAuth(), s = getSession() || {};
   const navigate = useNavigate();
   const [changeOpen, setChangeOpen] = useState(false);
   const [changing, setChanging] = useState(false);
+  const [profile, setProfile] = useState(null);
+
+  React.useEffect(() => { getMyProfile().then(setProfile); }, []);
 
   const confirmChange = async () => {
     setChanging(true);
@@ -26,7 +29,7 @@ export default function Settings() {
       <div className="bg-white rounded-2xl p-5 mt-6">
         <p className="font-bold text-[#183b3b]">{user?.full_name || s.name}</p>
         <p className="text-sm text-gray-500">{user?.email}</p>
-        <span className="inline-block bg-teal-50 text-[#287c7c] text-xs font-bold px-3 py-1 rounded-full mt-3">{s.is_paid ? 'FirstDollar Plus' : 'Free plan'}</span>
+        <span className="inline-block bg-teal-50 text-[#287c7c] text-xs font-bold px-3 py-1 rounded-full mt-3">{profile === null ? '...' : profile?.is_paid ? 'FirstDollar Plus ⭐' : 'Free plan'}</span>
       </div>
       <div className="bg-white rounded-2xl p-5 mt-4">
         <p className="font-bold text-[#183b3b] text-sm">My Plan</p>
