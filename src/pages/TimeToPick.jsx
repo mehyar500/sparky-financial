@@ -41,7 +41,8 @@ Return ONLY valid JSON:
         prompt,
         response_json_schema: { type: 'object', properties: { option1: { type: 'object' }, option2: { type: 'object' } } }
       });
-      saveSession({ ...session, option1: result.option1, option2: result.option2 });
+      const data = result?.option1 ? result : (result?.response || {});
+      if (data.option1 && data.option2) saveSession({ ...session, option1: data.option1, option2: data.option2 });
     } catch {}
     clearInterval(interval);
     setReprocessing(false);

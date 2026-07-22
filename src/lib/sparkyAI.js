@@ -2,6 +2,17 @@ import { base44 } from '@/api/base44Client';
 
 const MODEL = 'claude_sonnet_4_6';
 
+// Some models wrap structured output in a top-level "response" key (as an object or JSON string) — unwrap it.
+function unwrap(result, expectedKey) {
+  if (typeof result === 'string') {
+    try { result = JSON.parse(result); } catch { return result; }
+  }
+  if (result && typeof result === 'object' && !(expectedKey in result) && 'response' in result) {
+    return unwrap(result.response, expectedKey);
+  }
+  return result;
+}
+
 export const EARNINGS_DISCLAIMER = 'Actual earnings depend on location, demand, experience, pricing, and time invested.';
 
 const SAFETY_RULES = `Rules you must follow:
@@ -58,13 +69,15 @@ realistic_starter_income_range must read as an estimate (e.g. "$50–$250 per we
       required: ['option_1', 'option_2']
     }
   });
-  result.option_1.option_number = 1;
-  result.option_2.option_number = 2;
-  return result;
+  const data = unwrap(result, 'option_1');
+  if (!data?.option_1 || !data?.option_2) throw new Error('Sparky could not build your options. Please try again.');
+  data.option_1.option_number = 1;
+  data.option_2.option_number = 2;
+  return data;
 }
 
 export async function generateExploreDetail(option, profile) {
-  return await base44.integrations.Core.InvokeLLM({
+  const result = await base44.integrations.Core.InvokeLLM({
     model: MODEL,
     prompt: `You are Sparky, a practical income coach. The user is exploring this income opportunity before committing: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
@@ -80,10 +93,11 @@ Provide deeper, personalized explore detail for this exact opportunity and this 
       required: ['short_explanation', 'likely_challenges', 'safety_legal_considerations']
     }
   });
+  return unwrap(result, 'short_explanation');
 }
 
 export async function generateActionPlan(option, profile) {
-  return await base44.integrations.Core.InvokeLLM({
+  const result = await base44.integrations.Core.InvokeLLM({
     model: MODEL,
     prompt: `You are Sparky, a practical income coach. The user selected this income path: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
@@ -111,6 +125,7 @@ Create a personalized action plan specific to THIS opportunity and THIS user (ne
       required: ['first_goal', 'first_goal_amount', 'long_term_goal', 'tasks']
     }
   });
+  return unwrap(result, 'first_goal');
 }
 
 export async function askSparky(message, context = {}) {
