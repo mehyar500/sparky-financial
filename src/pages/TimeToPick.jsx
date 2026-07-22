@@ -37,6 +37,7 @@ Return ONLY valid JSON:
 
     try {
       const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt,
         response_json_schema: { type: 'object', properties: { option1: { type: 'object' }, option2: { type: 'object' } } }
       });

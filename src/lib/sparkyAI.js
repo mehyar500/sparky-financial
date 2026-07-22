@@ -1,5 +1,7 @@
 import { base44 } from '@/api/base44Client';
 
+const MODEL = 'claude_sonnet_4_6';
+
 export const EARNINGS_DISCLAIMER = 'Actual earnings depend on location, demand, experience, pricing, and time invested.';
 
 const SAFETY_RULES = `Rules you must follow:
@@ -44,6 +46,7 @@ export async function generateOptions(profile, { rejected = [], reason = '', pre
     ? `Previously rejected ideas (do NOT repeat these): ${rejected.map(o => o.title).join('; ')}. The user rejected them because: "${reason}". New preferences: "${preferences}".`
     : '';
   const result = await base44.integrations.Core.InvokeLLM({
+    model: MODEL,
     prompt: `You are Sparky, a warm and practical income coach. Based on this user's real onboarding profile, generate exactly TWO different, realistic income opportunities they can actually start. Personalize every field to their specific profile — reference what they told you in why_this_fits_user.
 User profile: ${profileSummary(profile)}
 ${rejectedText}
@@ -62,6 +65,7 @@ realistic_starter_income_range must read as an estimate (e.g. "$50–$250 per we
 
 export async function generateExploreDetail(option, profile) {
   return await base44.integrations.Core.InvokeLLM({
+    model: MODEL,
     prompt: `You are Sparky, a practical income coach. The user is exploring this income opportunity before committing: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
 ${SAFETY_RULES}
@@ -80,6 +84,7 @@ Provide deeper, personalized explore detail for this exact opportunity and this 
 
 export async function generateActionPlan(option, profile) {
   return await base44.integrations.Core.InvokeLLM({
+    model: MODEL,
     prompt: `You are Sparky, a practical income coach. The user selected this income path: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
 ${SAFETY_RULES}
@@ -110,6 +115,7 @@ Create a personalized action plan specific to THIS opportunity and THIS user (ne
 
 export async function askSparky(message, context = {}) {
   return await base44.integrations.Core.InvokeLLM({
+    model: MODEL,
     prompt: `You are Sparky, a warm, empathetic, practical income coach helping the user with their CURRENT plan.
 ${SAFETY_RULES}
 Current context:
