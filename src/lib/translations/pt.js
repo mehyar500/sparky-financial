@@ -189,6 +189,16 @@ export default {
   'dash.askHelp': '🤖 Peça ajuda ao Sparky com o seu plano atual…',
   'dash.needHelp': 'Preciso de ajuda com...',
   'dash.different': '↩ Quero uma opção diferente 🤖',
+  'dash.openCoach': '🎯 Avançar nas minhas tarefas com o Sparky',
+
+  'coach.back': '← Espaço de trabalho',
+  'coach.title': 'Coach de tarefas 🎯',
+  'coach.sub': 'O Sparky te ajuda a concluir cada tarefa pendente',
+  'coach.empty': 'Diga ao Sparky o que você quer resolver — ou escolha uma:',
+  'coach.q1': 'O que devo fazer agora?',
+  'coach.q2': 'Mostre todas as minhas tarefas pendentes',
+  'coach.q3': 'Estou travado na minha tarefa atual',
+  'coach.placeholder': 'Pergunte ao Sparky sobre suas tarefas...',
 
   'paths.title': 'Meus caminhos 🗂️',
   'paths.plusFeature': 'Meus caminhos é um recurso do FirstDollar Plus 🔒',

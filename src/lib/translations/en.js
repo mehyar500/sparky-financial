@@ -214,6 +214,17 @@ export default {
   'dash.askHelp': '🤖 Ask Sparky for help with your current plan…',
   'dash.needHelp': 'Need help with...',
   'dash.different': '↩ I want a different option 🤖',
+  'dash.openCoach': '🎯 Work through my tasks with Sparky',
+
+  // task coach
+  'coach.back': '← Workspace',
+  'coach.title': 'Task Coach 🎯',
+  'coach.sub': 'Sparky helps you finish every pending task',
+  'coach.empty': 'Tell Sparky what you want to tackle — or pick one:',
+  'coach.q1': 'What should I do next?',
+  'coach.q2': 'Show me all my pending tasks',
+  'coach.q3': "I'm stuck on my current task",
+  'coach.placeholder': 'Ask Sparky about your tasks...',
 
   // my paths
   'paths.title': 'My Paths 🗂️',

@@ -96,6 +96,7 @@ export default function Dashboard() {
         )}
         <p className="text-[#5BC8C8] text-sm font-bold text-center mb-2.5">{t('dash.askHelp')}</p>
         <ChatInput placeholder={t('dash.needHelp')} onSubmit={ask}/>
+        <Link to="/coach" className="block w-full bg-[#183b3b] text-white rounded-full py-3 text-sm font-bold text-center mt-3 hover:bg-[#2c4a4a] transition-colors">{t('dash.openCoach')}</Link>
         <button onClick={() => setChangeOpen(true)} className="w-full text-[#5BC8C8] text-xs font-bold text-center mt-4">{t('dash.different')}</button>
       </div>
     </div>

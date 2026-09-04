@@ -41,6 +41,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
 import Settings from './pages/Settings';
 import WeeklyReview from './pages/WeeklyReview';
+import TaskCoach from './pages/TaskCoach';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
@@ -96,6 +97,7 @@ const AuthenticatedApp = () => {
       <Route path="/my-paths" element={<MyPaths />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/weekly-review" element={<WeeklyReview />} />
+      <Route path="/coach" element={<TaskCoach />} />
       </Route>
     </Routes>
   );
