@@ -199,6 +199,9 @@ export default {
   'coach.q2': 'Muéstrame todas mis tareas pendientes',
   'coach.q3': 'Estoy atascado en mi tarea actual',
   'coach.placeholder': 'Pregúntale a Sparky sobre tus tareas...',
+  'coach.wa.title': 'Continúa esta sesión en WhatsApp cuando quieras',
+  'coach.wa.sub': 'El mismo coach, las mismas tareas — en tus chats.',
+  'coach.wa.cta': 'Chatear por WhatsApp',
 
   'paths.title': 'Mis caminos 🗂️',
   'paths.plusFeature': 'Mis caminos es una función de FirstDollar Plus 🔒',

@@ -225,6 +225,9 @@ export default {
   'coach.q2': 'Show me all my pending tasks',
   'coach.q3': "I'm stuck on my current task",
   'coach.placeholder': 'Ask Sparky about your tasks...',
+  'coach.wa.title': 'Continue this session on WhatsApp anytime',
+  'coach.wa.sub': 'Same coach, same tasks — right in your chats.',
+  'coach.wa.cta': 'Chat on WhatsApp',
 
   // my paths
   'paths.title': 'My Paths 🗂️',

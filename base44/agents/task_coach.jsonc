@@ -28,7 +28,7 @@
   "selected_skill_names": [],
   "selected_workspace_skill_ids": [],
   "model": "automatic",
-  "whatsapp_greeting": null,
+  "whatsapp_greeting": "Hey, it's Sparky \ud83c\udfaf You're connected. I'm here to help you finish every pending task on your income path and make your first money. Say \"next\" and I'll pull up the one task to do right now \u2014 or tell me where you're stuck. (Write in English, Spanish, or Portuguese \u2014 I'll match you.)",
   "telegram_greeting": null,
   "line_greeting": null,
   "memory_config": {
