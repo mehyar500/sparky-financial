@@ -97,6 +97,19 @@
     },
     "onboarding_complete": {
       "type": "boolean"
+    },
+    "language": {
+      "type": "string"
+    },
+    "whatsapp_opt_in": {
+      "type": "boolean"
+    },
+    "whatsapp_prompted": {
+      "type": "boolean"
+    },
+    "daily_nudges_on": {
+      "type": "boolean",
+      "default": true
     }
   },
   "required": []

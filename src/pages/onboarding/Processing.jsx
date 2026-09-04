@@ -15,7 +15,7 @@ const STAGES = [
 ];
 
 export default function Processing() {
-  const navigate = useNavigate(), { t } = useT(), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
+  const navigate = useNavigate(), { t, lang } = useT(), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
   const [stage, setStage] = useState(0), [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -33,6 +33,7 @@ export default function Processing() {
     // Each onboarding run creates a fresh profile for its own path; carry over payment entitlements.
     const profile = await base44.entities.UserProfile.create({
       name: s.name, location: s.location, situation: s.situation, timeline: s.timeline, hours_per_week: s.hours_per_week, selected_assets: s.selected_assets, extra_skills_text: s.extra_skills_text, onboarding_complete: true,
+      language: lang, whatsapp_opt_in: Boolean(s.whatsapp_opt_in), whatsapp_prompted: Boolean(s.whatsapp_prompted), daily_nudges_on: true,
       is_paid: prev?.is_paid || false, stripe_customer_id: prev?.stripe_customer_id || '', stripe_subscription_id: prev?.stripe_subscription_id || ''
     });
     const result = await generateOptions(profile);

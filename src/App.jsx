@@ -26,6 +26,7 @@ import CategoryHandsOn from './pages/onboarding/CategoryHandsOn';
 import CategoryOnline from './pages/onboarding/CategoryOnline';
 import ExtraSkills from './pages/onboarding/ExtraSkills';
 import WorkDone from './pages/onboarding/WorkDone';
+import WhatsAppStep from './pages/onboarding/WhatsAppStep';
 import Processing from './pages/onboarding/Processing';
 import DiscoveryScore from './pages/onboarding/DiscoveryScore';
 import ResultsAnnounce from './pages/onboarding/ResultsAnnounce';
@@ -80,6 +81,7 @@ const AuthenticatedApp = () => {
       <Route path="/onboarding/category/online" element={<CategoryOnline />} />
       <Route path="/onboarding/extra-skills" element={<ExtraSkills />} />
       <Route path="/onboarding/work-done" element={<WorkDone />} />
+      <Route path="/onboarding/whatsapp" element={<WhatsAppStep />} />
       <Route path="/onboarding/processing" element={<Processing />} />
       <Route path="/onboarding/score" element={<DiscoveryScore />} />
       <Route path="/onboarding/results-announce" element={<ResultsAnnounce />} />

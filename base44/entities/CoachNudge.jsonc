@@ -1,0 +1,38 @@
+{
+  "name": "CoachNudge",
+  "type": "object",
+  "properties": {
+    "profile_id": {
+      "type": "string"
+    },
+    "income_path_id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "morning",
+        "checkin"
+      ]
+    },
+    "nudge_date": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "task_title": {
+      "type": "string"
+    },
+    "dismissed": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "profile_id",
+    "kind",
+    "nudge_date",
+    "message"
+  ]
+}
