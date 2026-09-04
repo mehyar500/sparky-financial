@@ -1,6 +1,4 @@
 {
-  "name": "Evening Coach Check-in",
-  "description": "Every evening at 7pm, Sparky asks each active user what moved today and what they earned.",
   "definition": {
     "document": {
       "dsl": "1.0.0",
@@ -35,7 +33,7 @@
       "schedule_mode": "recurring",
       "cron_expression": "0 19 * * *",
       "one_time_date": null,
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "interval_value": null,
       "interval_unit": null,
       "interval_anchor": null,
@@ -43,5 +41,7 @@
       "ends_on_date": null,
       "ends_after_count": null
     }
-  }
+  },
+  "description": "Every evening at 7pm, Sparky asks each active user what moved today and what they earned.",
+  "name": "Evening Coach Check-in"
 }

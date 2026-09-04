@@ -9,7 +9,10 @@ export default async function (req) {
     const kind = body.kind === 'checkin' ? 'checkin' : 'morning';
     const svc = base44.asServiceRole;
 
-    const profiles = await svc.entities.UserProfile.filter({ daily_nudges_on: true, onboarding_complete: true }, '-updated_date', 200);
+    const all = await svc.entities.UserProfile.filter({ daily_nudges_on: true, onboarding_complete: true }, '-updated_date', 200);
+    // One message per person: keep only their most recently updated profile.
+    const seen = new Set();
+    const profiles = all.filter(p => !seen.has(p.created_by_id) && seen.add(p.created_by_id));
     const today = new Date().toISOString().slice(0, 10);
     const results = [];
 
@@ -28,7 +31,7 @@ export default async function (req) {
 
       const language = LANG_NAMES[profile.language] || 'English';
       const brief = kind === 'morning'
-        ? 'Write a short morning message: one line of real encouragement tied to their goal, then name the ONE task they should do today and why it moves them closer to money. End with a nudge to reply and get walked through it.'
+        ? 'Write a short morning message: one line of real encouragement tied to their goal, then list today\'s priority tasks as a short numbered list (up to 3, most important first), each on its own line as a few words. End with a nudge to reply and get walked through the first one.'
         : 'Write a short check-in message: ask directly whether anything moved today on their task, invite them to say what they earned or where they got stuck, and remind them you will update their progress from their answer.';
 
       const prompt = `You are Sparky, a direct, warm income coach in the FirstDollar app. ${brief}
@@ -39,7 +42,7 @@ Person: ${profile.name || 'there'} in ${profile.location || 'their area'}, ${pro
 Income path: ${path.selected_option_json?.title || 'their income path'}
 Goal: ${path.first_goal || 'first income'} ($${path.first_goal_amount || 100})
 Progress: ${done} of ${tasks.length} tasks done, ${pending.length} pending.
-Today's task: ${focus ? `${focus.title} — ${focus.description || ''}` : 'all tasks are complete, suggest the next real move'}
+Today's priority tasks (most important first): ${pending.length ? pending.slice(0, 3).map((t, i) => `${i + 1}. ${t.title}${t.description ? ` — ${t.description}` : ''}`).join(' | ') : 'all tasks are complete, suggest the next real move'}
 
 Return only the message text.`;
 

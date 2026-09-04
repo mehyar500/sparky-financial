@@ -1,6 +1,4 @@
 {
-  "name": "Morning Coach Message",
-  "description": "Every morning at 8am, Sparky sends each active user their one task for today with encouragement.",
   "definition": {
     "document": {
       "dsl": "1.0.0",
@@ -21,7 +19,7 @@
           "then": "end",
           "x-base44": {
             "title": "Send morning message",
-            "description": "Today's task + encouragement"
+            "description": "Boost + today's priority tasks"
           }
         }
       }
@@ -35,7 +33,7 @@
       "schedule_mode": "recurring",
       "cron_expression": "0 8 * * *",
       "one_time_date": null,
-      "timezone": "UTC",
+      "timezone": "America/New_York",
       "interval_value": null,
       "interval_unit": null,
       "interval_anchor": null,
@@ -43,5 +41,7 @@
       "ends_on_date": null,
       "ends_after_count": null
     }
-  }
+  },
+  "description": "Every morning at 8am, Sparky sends each active user a motivational boost plus today's priority tasks.",
+  "name": "Morning Coach Message"
 }
