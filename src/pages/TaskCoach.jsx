@@ -4,7 +4,6 @@ import { Loader2 } from 'lucide-react';
 import MobileShell from '@/components/MobileShell';
 import ChatInput from '@/components/ChatInput';
 import CoachMessage from '@/components/coach/CoachMessage';
-import WhatsAppConnect from '@/components/coach/WhatsAppConnect';
 import { base44 } from '@/api/base44Client';
 import { useT } from '@/lib/i18n';
 
@@ -66,7 +65,6 @@ export default function TaskCoach() {
 
       <div className="px-4 pb-4 pt-2 border-t border-gray-100 space-y-3">
         <ChatInput placeholder={t('coach.placeholder')} onSubmit={send}/>
-        <WhatsAppConnect/>
         <Link to="/dashboard" className="block text-center text-[#64748B] text-xs font-semibold">{t('coach.back')}</Link>
       </div>
     </div>

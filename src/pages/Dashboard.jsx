@@ -4,7 +4,6 @@ import { ChevronDown, Loader2, Settings } from 'lucide-react';
 import MobileShell from '@/components/MobileShell';
 import ChatInput from '@/components/ChatInput';
 import ChangeOptionDialog from '@/components/ChangeOptionDialog';
-import WhatsAppIconButton from '@/components/coach/WhatsAppIconButton';
 import NudgeCard from '@/components/workspace/NudgeCard';
 import { base44 } from '@/api/base44Client';
 import { askSparky } from '@/lib/sparkyAI';
@@ -62,10 +61,7 @@ export default function Dashboard() {
     <div className="flex flex-col min-h-[680px] bg-white">
       <div className="w-full bg-gradient-to-b from-[#5BC8C8] to-[#7dd4d4] rounded-b-[50%_25%] px-6 pt-5 pb-8 text-center relative flex-shrink-0">
         <Link to="/my-paths" aria-label={t('dash.myPaths')} className="absolute left-4 top-4 text-white/90 text-xs font-bold">{t('dash.myPaths')}</Link>
-        <div className="absolute right-4 top-3 flex items-center gap-2">
-          <WhatsAppIconButton/>
-          <Link to="/settings" aria-label={t('settings.title')}><Settings size={17} className="text-white/80"/></Link>
-        </div>
+        <Link to="/settings" aria-label={t('settings.title')} className="absolute right-4 top-3"><Settings size={17} className="text-white/80"/></Link>
         <Link to="/my-paths" className="inline-block bg-[#1e5555] text-white text-[11px] font-bold px-3 py-1 rounded-full mb-1.5 max-w-[220px] truncate">📍 {path.selected_option_json?.title || t('dash.myPath')}</Link>
         <p className="text-[#1e5555] font-black text-lg">{t('dash.progress', { n: progress })}</p>
         <ChevronDown className="text-[#1e5555] mx-auto" size={16}/>
