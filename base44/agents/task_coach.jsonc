@@ -13,13 +13,22 @@
     {
       "entity_name": "IncomePath",
       "allowed_operations": [
-        "read"
+        "read",
+        "update"
       ]
     },
     {
       "entity_name": "UserProfile",
       "allowed_operations": [
-        "read"
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "CoachNudge",
+      "allowed_operations": [
+        "read",
+        "update"
       ]
     }
   ],
