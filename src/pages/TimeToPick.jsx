@@ -9,9 +9,11 @@ import { getSession, saveSession } from '@/lib/onboardingState';
 import { base44 } from '@/api/base44Client';
 import { getMyProfile, getActiveRecSet } from '@/lib/pathData';
 import { generateOptions } from '@/lib/sparkyAI';
+import { useT } from '@/lib/i18n';
 
 export default function TimeToPick() {
   const navigate = useNavigate();
+  const { t } = useT();
   const [state, setState] = useState({ loading: true, profile: null, recSet: null });
   const [reprocessing, setReprocessing] = useState(false);
 
@@ -52,8 +54,8 @@ export default function TimeToPick() {
       <div className="flex flex-col min-h-[680px] bg-white">
         <WaveHeader height={80}/>
         <div className="flex flex-col items-center flex-1 justify-center px-8 text-center pb-10">
-          <p className="text-[#5BC8C8] font-bold text-base">Got it, {state.profile?.name || 'friend'}!</p>
-          <p className="text-[#1e2f2f] font-black text-xl mt-3 leading-snug">Sparky is thinking hard to build you another 2-choice Personalized Plan, based on your text.</p>
+          <p className="text-[#5BC8C8] font-bold text-base">{t('pick.gotIt', { name: state.profile?.name || t('common.friend') })}</p>
+          <p className="text-[#1e2f2f] font-black text-xl mt-3 leading-snug">{t('pick.thinking')}</p>
           <SparkyImage pose="thinking" size={200} className="mt-8"/>
         </div>
       </div>
@@ -64,24 +66,24 @@ export default function TimeToPick() {
     <div className="flex flex-col min-h-[680px] bg-white">
       <WaveHeader height={80}/>
       <div className="text-center px-6 mt-4">
-        <p className="text-[#5BC8C8] font-bold text-sm">Let's start our Action Plan now?</p>
-        <p className="text-[#1e2f2f] font-black text-2xl mt-1">Which option do you pick?</p>
+        <p className="text-[#5BC8C8] font-bold text-sm">{t('pick.start')}</p>
+        <p className="text-[#1e2f2f] font-black text-2xl mt-1">{t('pick.which')}</p>
       </div>
 
       <div className="flex items-center justify-center gap-4 px-6 flex-1">
         <SparkyImage pose="waving" size={140}/>
         <div className="flex flex-col items-center gap-1.5">
-          <button onClick={() => pick(1)} className="bg-[#2c4a4a] text-white font-bold rounded-full px-10 py-3 text-sm hover:bg-[#1e3535] transition-colors">Option 1</button>
+          <button onClick={() => pick(1)} className="bg-[#2c4a4a] text-white font-bold rounded-full px-10 py-3 text-sm hover:bg-[#1e3535] transition-colors">{t('common.option', { n: 1 })}</button>
           <ChevronUp className="text-[#5BC8C8]" size={18}/>
-          <span className="text-[#5BC8C8] text-xs font-semibold">Click one</span>
+          <span className="text-[#5BC8C8] text-xs font-semibold">{t('pick.clickOne')}</span>
           <ChevronDown className="text-[#5BC8C8]" size={18}/>
-          <button onClick={() => pick(2)} className="bg-[#2c4a4a] text-white font-bold rounded-full px-10 py-3 text-sm hover:bg-[#1e3535] transition-colors">Option 2</button>
+          <button onClick={() => pick(2)} className="bg-[#2c4a4a] text-white font-bold rounded-full px-10 py-3 text-sm hover:bg-[#1e3535] transition-colors">{t('common.option', { n: 2 })}</button>
         </div>
       </div>
 
       <div className="px-6 pb-6 mt-2">
-        <p className="text-[#1e2f2f] font-bold text-sm text-center leading-snug">No, Sparky! I need ANOTHER OPTION.<br/>Let me explain here below:</p>
-        <ChatInput placeholder="What's your suggestion?" onSubmit={handleSuggestion} className="mt-3"/>
+        <p className="text-[#1e2f2f] font-bold text-sm text-center leading-snug whitespace-pre-line">{t('pick.another')}</p>
+        <ChatInput placeholder={t('pick.suggestion')} onSubmit={handleSuggestion} className="mt-3"/>
       </div>
     </div>
   </MobileShell>;

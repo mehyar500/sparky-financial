@@ -6,9 +6,11 @@ import WaveHeader from '@/components/WaveHeader';
 import { base44 } from '@/api/base44Client';
 import { getMyProfile, getActiveRecSet } from '@/lib/pathData';
 import { generateExploreDetail } from '@/lib/sparkyAI';
+import { useT } from '@/lib/i18n';
 
 export default function ExploreOption() {
   const navigate = useNavigate();
+  const { t } = useT();
   const num = new URLSearchParams(window.location.search).get('opt') === '2' ? 2 : 1;
   const other = num === 1 ? 2 : 1;
   const [state, setState] = useState({ loading: true, option: null, detailLoading: false });
@@ -40,33 +42,33 @@ export default function ExploreOption() {
       <WaveHeader height={65}/>
       <div className="flex flex-col flex-1 px-6 pt-5 pb-6 overflow-y-auto">
         <div className="text-center">
-          <p className="text-[#5BC8C8] font-bold text-sm">Option {num}</p>
+          <p className="text-[#5BC8C8] font-bold text-sm">{t('common.option', { n: num })}</p>
           <ChevronDown className="text-[#5BC8C8] mx-auto mt-0.5" size={18}/>
           <h1 className="text-white font-black text-3xl mt-1 leading-tight">{o.title}</h1>
         </div>
 
         <div className="mt-6 space-y-3 text-center text-sm">
-          <p><span className="text-[#5BC8C8] font-bold">Typical Starter Income: </span><span className="text-white font-bold">{o.realistic_starter_income_range}</span></p>
+          <p><span className="text-[#5BC8C8] font-bold">{t('explore.income')}</span><span className="text-white font-bold">{o.realistic_starter_income_range}</span></p>
           {num === 1
-            ? <p><span className="text-[#5BC8C8] font-bold">Fastest Path: </span><span className="text-white font-bold">{o.estimated_time_to_first_income}</span></p>
-            : <p><span className="text-[#5BC8C8] font-bold">Best For: </span><span className="text-white font-bold">{o.one_sentence_description}</span></p>}
+            ? <p><span className="text-[#5BC8C8] font-bold">{t('explore.fastest')}</span><span className="text-white font-bold">{o.estimated_time_to_first_income}</span></p>
+            : <p><span className="text-[#5BC8C8] font-bold">{t('explore.bestFor')}</span><span className="text-white font-bold">{o.one_sentence_description}</span></p>}
         </div>
 
         <div className="mt-6 text-center">
-          <p className="text-[#5BC8C8] font-bold text-sm">Why Sparky picked this:</p>
+          <p className="text-[#5BC8C8] font-bold text-sm">{t('explore.why')}</p>
           <p className="text-white italic text-sm leading-relaxed mt-2">"{o.why_this_fits_user}"</p>
         </div>
 
         {state.detailLoading && (
           <div className="mt-6 flex items-center justify-center gap-2 text-[#5BC8C8] text-xs font-semibold">
-            <Loader2 className="animate-spin" size={14}/> Sparky is digging deeper...
+            <Loader2 className="animate-spin" size={14}/> {t('explore.digging')}
           </div>
         )}
         {o.likely_challenges && (
           <div className="mt-6 bg-[#1e3535] rounded-2xl p-4 space-y-4 text-sm">
             {o.short_explanation && <p className="text-white/90 leading-relaxed">{o.short_explanation}</p>}
             <div>
-              <p className="text-[#5BC8C8] font-bold mb-1.5">Likely challenges</p>
+              <p className="text-[#5BC8C8] font-bold mb-1.5">{t('explore.challenges')}</p>
               {o.likely_challenges.map((c, i) => (
                 <div key={i} className="flex items-start gap-2 mb-1">
                   <div className="w-2 h-2 rounded-sm bg-[#5BC8C8] mt-1.5 flex-shrink-0"/>
@@ -75,7 +77,7 @@ export default function ExploreOption() {
               ))}
             </div>
             {o.safety_legal_considerations && <div>
-              <p className="text-[#5BC8C8] font-bold mb-1.5">Safety &amp; legal notes</p>
+              <p className="text-[#5BC8C8] font-bold mb-1.5">{t('explore.safety')}</p>
               {o.safety_legal_considerations.map((c, i) => (
                 <div key={i} className="flex items-start gap-2 mb-1">
                   <div className="w-2 h-2 rounded-sm bg-[#5BC8C8] mt-1.5 flex-shrink-0"/>
@@ -87,8 +89,8 @@ export default function ExploreOption() {
         )}
 
         <div className="mt-auto pt-6 space-y-3">
-          <button onClick={() => navigate(`/explore?opt=${other}`)} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-3.5 font-bold text-sm hover:bg-[#7dd4d4] transition-colors">See Option {other}</button>
-          <button onClick={() => navigate('/time-to-pick')} className="w-full border border-[#5BC8C8] text-[#5BC8C8] rounded-full py-3.5 font-bold text-sm hover:bg-[#5BC8C8]/10 transition-colors">Back to Options Page</button>
+          <button onClick={() => navigate(`/explore?opt=${other}`)} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-3.5 font-bold text-sm hover:bg-[#7dd4d4] transition-colors">{t('explore.see', { n: other })}</button>
+          <button onClick={() => navigate('/time-to-pick')} className="w-full border border-[#5BC8C8] text-[#5BC8C8] rounded-full py-3.5 font-bold text-sm hover:bg-[#5BC8C8]/10 transition-colors">{t('explore.back')}</button>
         </div>
       </div>
     </div>

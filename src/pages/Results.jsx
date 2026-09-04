@@ -7,9 +7,11 @@ import PaywallCTA from '@/components/results/PaywallCTA';
 import { base44 } from '@/api/base44Client';
 import { startCheckout } from '@/lib/checkout';
 import { getMyProfile, getActiveRecSet } from '@/lib/pathData';
+import { useT } from '@/lib/i18n';
 
 export default function Results() {
   const navigate = useNavigate();
+  const { t } = useT();
   const [recSet, setRecSet] = useState(null), [profile, setProfile] = useState(null), [loading, setLoading] = useState(true);
 
   useEffect(() => { (async () => {
@@ -32,26 +34,26 @@ export default function Results() {
   return <MobileShell>
     <div className="flex flex-col min-h-[680px] bg-[#183b3b]">
       <WaveHeader height={95}>
-        <p className="text-[#1e5555] font-bold text-sm text-center leading-snug">✨ Let's explore all your choices<br/>before you choose one.</p>
+        <p className="text-[#1e5555] font-bold text-sm text-center leading-snug whitespace-pre-line">{t('results.header')}</p>
       </WaveHeader>
 
       {/* Top half — Option 1 */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6 text-center">
         <p className="text-white font-black text-2xl leading-tight">💡 {opt1.title}</p>
         <ChevronUp className="text-[#5BC8C8] mt-3" size={22}/>
-        <button onClick={() => open(1)} className="mt-2 bg-[#5BC8C8] text-[#183b3b] font-bold rounded-full px-12 py-3 text-sm hover:bg-[#7dd4d4] transition-colors">Option 1</button>
+        <button onClick={() => open(1)} className="mt-2 bg-[#5BC8C8] text-[#183b3b] font-bold rounded-full px-12 py-3 text-sm hover:bg-[#7dd4d4] transition-colors">{t('common.option', { n: 1 })}</button>
       </div>
 
       {/* Divider / lock */}
       <div className="flex items-center gap-3 px-8">
         <div className="flex-1 h-px bg-white/20"/>
-        {!isPaid && <button onClick={() => startCheckout(profile?.id)} aria-label="Unlock plans"><Lock className="text-[#5BC8C8]" size={20}/></button>}
+        {!isPaid && <button onClick={() => startCheckout(profile?.id)} aria-label={t('results.unlock')}><Lock className="text-[#5BC8C8]" size={20}/></button>}
         <div className="flex-1 h-px bg-white/20"/>
       </div>
 
       {/* Bottom half — Option 2 */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6 text-center">
-        <button onClick={() => open(2)} className="bg-[#5BC8C8] text-[#183b3b] font-bold rounded-full px-12 py-3 text-sm hover:bg-[#7dd4d4] transition-colors">Option 2</button>
+        <button onClick={() => open(2)} className="bg-[#5BC8C8] text-[#183b3b] font-bold rounded-full px-12 py-3 text-sm hover:bg-[#7dd4d4] transition-colors">{t('common.option', { n: 2 })}</button>
         <ChevronDown className="text-[#5BC8C8] mt-2" size={22}/>
         <p className="text-white font-black text-2xl leading-tight mt-3">💡 {opt2.title}</p>
       </div>

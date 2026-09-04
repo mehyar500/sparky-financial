@@ -7,9 +7,11 @@ import ChangeOptionDialog from '@/components/ChangeOptionDialog';
 import { base44 } from '@/api/base44Client';
 import { askSparky } from '@/lib/sparkyAI';
 import { getMyProfile, getActivePath, getTasks, touchPath } from '@/lib/pathData';
+import { useT } from '@/lib/i18n';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { t } = useT();
   const [data, setData] = useState({ loading: true, profile: null, path: null, tasks: [] });
   const [chat, setChat] = useState(null); // { question, answer, loading }
   const [changeOpen, setChangeOpen] = useState(false);
@@ -57,16 +59,16 @@ export default function Dashboard() {
   return <MobileShell>
     <div className="flex flex-col min-h-[680px] bg-white">
       <div className="w-full bg-gradient-to-b from-[#5BC8C8] to-[#7dd4d4] rounded-b-[50%_25%] px-6 pt-5 pb-8 text-center relative flex-shrink-0">
-        <Link to="/my-paths" aria-label="My Paths" className="absolute left-4 top-4 text-white/90 text-xs font-bold">🗂️ My Paths</Link>
-        <Link to="/settings" aria-label="Settings" className="absolute right-4 top-4"><Settings size={17} className="text-white/80"/></Link>
-        <Link to="/my-paths" className="inline-block bg-[#1e5555] text-white text-[11px] font-bold px-3 py-1 rounded-full mb-1.5 max-w-[220px] truncate">📍 {path.selected_option_json?.title || 'My path'}</Link>
-        <p className="text-[#1e5555] font-black text-lg">Progress {progress}%</p>
+        <Link to="/my-paths" aria-label={t('dash.myPaths')} className="absolute left-4 top-4 text-white/90 text-xs font-bold">{t('dash.myPaths')}</Link>
+        <Link to="/settings" aria-label={t('settings.title')} className="absolute right-4 top-4"><Settings size={17} className="text-white/80"/></Link>
+        <Link to="/my-paths" className="inline-block bg-[#1e5555] text-white text-[11px] font-bold px-3 py-1 rounded-full mb-1.5 max-w-[220px] truncate">📍 {path.selected_option_json?.title || t('dash.myPath')}</Link>
+        <p className="text-[#1e5555] font-black text-lg">{t('dash.progress', { n: progress })}</p>
         <ChevronDown className="text-[#1e5555] mx-auto" size={16}/>
-        <p className="text-white font-bold text-sm mt-0.5">Week 1 Goal: Earn ${path.first_goal_amount || 100}</p>
+        <p className="text-white font-bold text-sm mt-0.5">{t('dash.weekGoal', { amount: path.first_goal_amount || 100 })}</p>
       </div>
 
       <div className="px-6 mt-5 text-center">
-        <p className="text-[#2c9a9a] font-black text-base leading-snug">🔥 Focus Today: {focus ? focus.title : 'All tasks complete! Great work.'}</p>
+        <p className="text-[#2c9a9a] font-black text-base leading-snug">{t('dash.focus', { task: focus ? focus.title : t('dash.allDone') })}</p>
       </div>
 
       {focus && (
@@ -79,7 +81,7 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-          <button onClick={() => markDone(focus)} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-2.5 text-sm font-bold mt-4 hover:bg-[#7dd4d4] transition-colors">Mark this task done</button>
+          <button onClick={() => markDone(focus)} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-2.5 text-sm font-bold mt-4 hover:bg-[#7dd4d4] transition-colors">{t('dash.markDone')}</button>
         </div>
       )}
 
@@ -88,13 +90,13 @@ export default function Dashboard() {
           <div className="mb-3 space-y-2">
             <p className="text-[#2c4a4a] text-sm font-semibold bg-teal-50 rounded-2xl px-4 py-2.5">{chat.question}</p>
             {chat.loading
-              ? <div className="flex items-center gap-2 text-[#5BC8C8] text-xs font-semibold px-2"><Loader2 className="animate-spin" size={14}/> Sparky is thinking...</div>
+              ? <div className="flex items-center gap-2 text-[#5BC8C8] text-xs font-semibold px-2"><Loader2 className="animate-spin" size={14}/> {t('dash.thinking')}</div>
               : <p className="text-[#1e2f2f] text-sm leading-relaxed bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 whitespace-pre-line">{chat.answer}</p>}
           </div>
         )}
-        <p className="text-[#5BC8C8] text-sm font-bold text-center mb-2.5">🤖 Ask Sparky for help with your current plan…</p>
-        <ChatInput placeholder="Need help with..." onSubmit={ask}/>
-        <button onClick={() => setChangeOpen(true)} className="w-full text-[#5BC8C8] text-xs font-bold text-center mt-4">↩ I want a different option 🤖</button>
+        <p className="text-[#5BC8C8] text-sm font-bold text-center mb-2.5">{t('dash.askHelp')}</p>
+        <ChatInput placeholder={t('dash.needHelp')} onSubmit={ask}/>
+        <button onClick={() => setChangeOpen(true)} className="w-full text-[#5BC8C8] text-xs font-bold text-center mt-4">{t('dash.different')}</button>
       </div>
     </div>
     <ChangeOptionDialog open={changeOpen} loading={changing} onConfirm={confirmChange} onCancel={() => setChangeOpen(false)}/>

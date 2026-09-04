@@ -4,17 +4,18 @@ import MobileShell from '@/components/MobileShell';
 import { base44 } from '@/api/base44Client';
 import { getSession, saveSession } from '@/lib/onboardingState';
 import { generateOptions } from '@/lib/sparkyAI';
+import { useT } from '@/lib/i18n';
 
 const STAGES = [
-  { emoji: '⚡', message: 'Scanning your skills...' },
-  { emoji: '🔍', message: 'Checking local demand...' },
-  { emoji: '🗺️', message: 'Mapping your fastest paths...' },
-  { emoji: '💡', message: 'Sparky is cooking something good...' },
-  { emoji: '🚀', message: 'Almost ready — this is gonna be good!' },
+  { emoji: '⚡', key: 'processing.s1' },
+  { emoji: '🔍', key: 'processing.s2' },
+  { emoji: '🗺️', key: 'processing.s3' },
+  { emoji: '💡', key: 'processing.s4' },
+  { emoji: '🚀', key: 'processing.s5' },
 ];
 
 export default function Processing() {
-  const navigate = useNavigate(), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
+  const navigate = useNavigate(), { t } = useT(), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
   const [stage, setStage] = useState(0), [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export default function Processing() {
     await base44.entities.RecommendationSet.create({ option_1_json: result.option_1, option_2_json: result.option_2, rejected_options: [], date_generated: new Date().toISOString(), status: 'active' });
     saveSession({ ...s, profile_id: profile.id });
     navigate('/results');
-  } catch (e) { setError(e.message || 'We could not build your options.'); } }; run(); }, [attempt]);
+  } catch (e) { setError(e.message || t('processing.error')); } }; run(); }, [attempt]);
 
   const current = STAGES[stage];
 
@@ -50,14 +51,14 @@ export default function Processing() {
       >
         {current.emoji}
       </div>
-      <h1 className="text-2xl font-black mt-8">Finding your fastest paths...</h1>
+      <h1 className="text-2xl font-black mt-8">{t('processing.title')}</h1>
       <p
         className="text-white/60 mt-3 transition-opacity duration-300 min-h-[24px]"
         style={{ opacity: visible ? 1 : 0 }}
       >
-        {current.message}
+        {t(current.key)}
       </p>
-      {error && <div className="mt-8"><p className="text-red-200 text-sm">{error}</p><button onClick={() => setAttempt(x => x + 1)} className="mt-4 bg-[#5BC8C8] px-6 py-3 rounded-full font-bold">Try again</button></div>}
+      {error && <div className="mt-8"><p className="text-red-200 text-sm">{error}</p><button onClick={() => setAttempt(x => x + 1)} className="mt-4 bg-[#5BC8C8] px-6 py-3 rounded-full font-bold">{t('processing.retry')}</button></div>}
     </div>
   </MobileShell>;
 }

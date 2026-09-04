@@ -1,8 +1,9 @@
 import { base44 } from '@/api/base44Client';
+import { getLang, translate } from '@/lib/i18n';
 
 export async function startCheckout(profileId) {
   if (window.self !== window.top) {
-    alert('Checkout works from the published app. Open FirstDollar in a new tab to continue.');
+    alert(translate(getLang(), 'checkout.iframe'));
     return;
   }
   const r = await base44.functions.invoke('createCheckout', { origin: window.location.origin, profileId });

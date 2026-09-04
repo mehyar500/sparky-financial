@@ -1,6 +1,13 @@
 import { base44 } from '@/api/base44Client';
+import { getLang, LANGUAGE_NAMES } from '@/lib/i18n';
 
 const MODEL = 'claude_sonnet_4_6';
+
+// Every generation must speak the user's chosen app language, flavored to their region.
+function languageRule(profile = {}) {
+  const language = LANGUAGE_NAMES[getLang()] || 'English';
+  return `Language rule: write ALL user-facing text values in ${language}. Adapt regional vocabulary, spelling, currency symbols, and local examples to the user's location ("${profile.location || 'unknown'}") — e.g. Brazilian vs European Portuguese, Latin American vs Spain Spanish, US vs UK English. Keep every JSON key exactly as specified (in English).`;
+}
 
 // Some models wrap structured output in a top-level "response" key (as an object or JSON string) — unwrap it.
 function unwrap(result, expectedKey) {
@@ -62,6 +69,7 @@ export async function generateOptions(profile, { rejected = [], reason = '', pre
 User profile: ${profileSummary(profile)}
 ${rejectedText}
 ${SAFETY_RULES}
+${languageRule(profile)}
 realistic_starter_income_range must read as an estimate (e.g. "$50–$250 per week, depending on local demand"). first_three_steps are 3 short concrete actions. risks_or_requirements are 2-4 practical safety/legal/platform notes.`,
     response_json_schema: {
       type: 'object',
@@ -82,6 +90,7 @@ export async function generateExploreDetail(option, profile) {
     prompt: `You are Sparky, a practical income coach. The user is exploring this income opportunity before committing: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
 ${SAFETY_RULES}
+${languageRule(profile)}
 Provide deeper, personalized explore detail for this exact opportunity and this exact user.`,
     response_json_schema: {
       type: 'object',
@@ -102,6 +111,7 @@ export async function generateActionPlan(option, profile) {
     prompt: `You are Sparky, a practical income coach. The user selected this income path: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
 ${SAFETY_RULES}
+${languageRule(profile)}
 Create a personalized action plan specific to THIS opportunity and THIS user (never generic tasks). Include a first-$100 goal (first_goal, plus first_goal_amount as a number like 50 or 100), a longer-term goal, and 3-7 ordered starter tasks. Each task needs: title, description, why_it_matters, estimated_minutes (number), difficulty (Easy/Medium/Hard), instructions (3-5 short concrete steps), order (number starting at 1). Also include "tip": one short, practical, encouraging tip quote (one sentence) specific to this plan.`,
     response_json_schema: {
       type: 'object',
@@ -134,6 +144,7 @@ export async function askSparky(message, context = {}) {
     model: MODEL,
     prompt: `You are Sparky, a warm, empathetic, practical income coach helping the user with their CURRENT plan.
 ${SAFETY_RULES}
+${languageRule(context.profile || {})}
 Current context:
 - User profile: ${profileSummary(context.profile || {})}
 - Selected income path: ${JSON.stringify(context.option || {})}

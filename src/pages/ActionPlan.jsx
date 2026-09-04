@@ -7,9 +7,11 @@ import SparkyImage from '@/components/SparkyImage';
 import { base44 } from '@/api/base44Client';
 import { getSession } from '@/lib/onboardingState';
 import { getMyProfile, getActiveRecSet, getActivePath, getTasks, startPath } from '@/lib/pathData';
+import { useT } from '@/lib/i18n';
 
 export default function ActionPlan() {
   const navigate = useNavigate();
+  const { t } = useT();
   const [state, setState] = useState({ loading: true, building: false, path: null, tasks: [] });
   const [step, setStep] = useState('overview'); // 'overview' | 'pick'
   const chosen = (getSession() || {}).chosen_option || {};
@@ -37,8 +39,8 @@ export default function ActionPlan() {
       <div className="flex flex-col min-h-[680px] bg-white">
         <WaveHeader height={80}/>
         <div className="flex flex-col items-center flex-1 justify-center px-8 text-center pb-10">
-          <p className="text-[#5BC8C8] font-bold text-base">Just a moment!</p>
-          <p className="text-[#1e2f2f] font-black text-xl mt-3 leading-snug">Sparky is building your personalized step-by-step action plan.</p>
+          <p className="text-[#5BC8C8] font-bold text-base">{t('plan.moment')}</p>
+          <p className="text-[#1e2f2f] font-black text-xl mt-3 leading-snug">{t('plan.building')}</p>
           <SparkyImage pose="thinking" size={200} className="mt-8"/>
         </div>
       </div>
@@ -62,9 +64,8 @@ export default function ActionPlan() {
             </button>
           ))}
         </div>
-        <div className="px-6 pb-6 flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full border-2 border-[#5BC8C8] flex items-center justify-center text-[#5BC8C8] text-lg flex-shrink-0">+</div>
-          <button onClick={() => navigate('/dashboard')} className="flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-400 text-left hover:border-[#5BC8C8] transition-colors">Pick one to start!</button>
+        <div className="px-6 pb-6">
+          <button onClick={() => navigate('/dashboard')} className="w-full border border-gray-200 rounded-full px-4 py-2.5 text-sm text-gray-400 text-center hover:border-[#5BC8C8] transition-colors">{t('plan.pickOne')}</button>
         </div>
       </div>
     </MobileShell>;
@@ -73,17 +74,17 @@ export default function ActionPlan() {
   return <MobileShell>
     <div className="flex flex-col min-h-[680px] bg-[#2c4a4a]">
       <WaveHeader height={70}>
-        <p className="text-[#1e5555] font-bold text-sm text-center">Option {optNum} / {option.title}</p>
+        <p className="text-[#1e5555] font-bold text-sm text-center">{t('common.option', { n: optNum })} / {option.title}</p>
       </WaveHeader>
       <div className="flex flex-col flex-1 px-6 pt-5 pb-6 overflow-y-auto">
         <div className="text-center">
-          <p className="text-white font-black text-xl">🎯 Your First Goal</p>
+          <p className="text-white font-black text-xl">{t('plan.firstGoal')}</p>
           <ChevronDown className="text-[#5BC8C8] mx-auto mt-0.5" size={18}/>
-          <p className="text-white font-bold text-lg mt-1">Earn your first ${path.first_goal_amount || 100} this week.</p>
+          <p className="text-white font-bold text-lg mt-1">{t('plan.earn', { amount: path.first_goal_amount || 100 })}</p>
         </div>
 
         <div className="bg-[#1e3535] rounded-2xl p-4 mt-6">
-          <p className="text-[#5BC8C8] text-sm font-bold text-center">Action Checklist</p>
+          <p className="text-[#5BC8C8] text-sm font-bold text-center">{t('plan.checklist')}</p>
           <ChevronDown className="text-[#5BC8C8] mx-auto mt-1 mb-2" size={16}/>
           <div className="flex flex-col gap-2.5">
             {tasks.map(t => (
@@ -93,11 +94,11 @@ export default function ActionPlan() {
               </div>
             ))}
           </div>
-          {path.tip && <p className="text-gray-400 text-xs text-center mt-4 italic">Tip:<br/>"{path.tip}"</p>}
+          {path.tip && <p className="text-gray-400 text-xs text-center mt-4 italic">{t('plan.tip')}<br/>"{path.tip}"</p>}
         </div>
 
         <div className="mt-auto pt-5">
-          <button onClick={() => setStep('pick')} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-3.5 font-bold hover:bg-[#7dd4d4] transition-colors">Let's start here!</button>
+          <button onClick={() => setStep('pick')} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-3.5 font-bold hover:bg-[#7dd4d4] transition-colors">{t('plan.start')}</button>
         </div>
       </div>
     </div>
