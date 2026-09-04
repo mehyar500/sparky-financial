@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { coreBlock, MODELS } from '../../shared/coachPrompt.ts';
 
-const LANG_NAMES = { en: 'English', es: 'Spanish', pt: 'Portuguese' };
+const TZ = 'America/New_York';
 
 export default async function (req) {
   try {
@@ -13,7 +14,7 @@ export default async function (req) {
     // One message per person: keep only their most recently updated profile.
     const seen = new Set();
     const profiles = all.filter(p => !seen.has(p.created_by_id) && seen.add(p.created_by_id));
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: TZ });
     const results = [];
 
     for (const profile of profiles) {
@@ -29,24 +30,27 @@ export default async function (req) {
       const focus = pending.find(t => t.status === 'in_progress') || pending[0];
       const done = tasks.length - pending.length;
 
-      const language = LANG_NAMES[profile.language] || 'English';
+      const checkins = await svc.entities.CheckIn.filter({ income_path_id: path.id }, '-check_in_date', 3);
+
       const brief = kind === 'morning'
         ? 'Write a short morning message: one line of real encouragement tied to their goal, then list today\'s priority tasks as a short numbered list (up to 3, most important first), each on its own line as a few words. End with a nudge to reply and get walked through the first one.'
         : 'Write a short check-in message: ask directly whether anything moved today on their task, invite them to say what they earned or where they got stuck, and remind them you will update their progress from their answer.';
 
-      const prompt = `You are Sparky, a direct, warm income coach in the FirstDollar app. ${brief}
+      const prompt = `${coreBlock(profile, TZ)}
 
-Write it in ${language}. Max 60 words. Warm, direct, action-first. At most two emojis. No buzzwords, no motivational fluff, never guarantee earnings.
+Task: ${brief}
+Max 60 words. At most two emojis. Do not repeat yourself from previous days — react to where they actually are now.
 
 Person: ${profile.name || 'there'} in ${profile.location || 'their area'}, ${profile.hours_per_week || 'limited'} hours a week available.
 Income path: ${path.selected_option_json?.title || 'their income path'}
-Goal: ${path.first_goal || 'first income'} ($${path.first_goal_amount || 100})
+Goal: ${path.first_goal || 'first income'} (target ${path.first_goal_amount || 100}, earned so far ${path.income_total || 0})
 Progress: ${done} of ${tasks.length} tasks done, ${pending.length} pending.
+Recent check-ins: ${JSON.stringify(checkins.map(c => ({ date: c.check_in_date, progress: c.progress_response, earned: c.amount_earned, blocker: c.blocker })))}
 Today's priority tasks (most important first): ${pending.length ? pending.slice(0, 3).map((t, i) => `${i + 1}. ${t.title}${t.description ? ` — ${t.description}` : ''}`).join(' | ') : 'all tasks are complete, suggest the next real move'}
 
 Return only the message text.`;
 
-      const message = await svc.integrations.Core.InvokeLLM({ prompt });
+      const message = await svc.integrations.Core.InvokeLLM({ model: MODELS.fast, prompt });
       const text = typeof message === 'string' ? message.trim() : String(message?.response || '').trim();
       if (!text) continue;
 

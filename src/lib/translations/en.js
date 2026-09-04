@@ -277,6 +277,16 @@ export default {
   'settings.deletion': 'To request account and data deletion, contact Base44 support through the official support channel.',
   'settings.error': 'Something went wrong. Please try again.',
 
+  // weekly review
+  'weekly.title': 'Weekly review 📊',
+  'weekly.locked': 'FirstDollar Plus feature ⭐',
+  'weekly.lockedSub': 'Unlock weekly reviews and multiple income streams for $7.99/month.',
+  'weekly.cta': 'Get FirstDollar Plus',
+  'weekly.tasksDone': 'tasks done',
+  'weekly.earned': 'earned',
+  'weekly.noticed': 'SPARKY NOTICED',
+  'weekly.loading': 'Reviewing your week...',
+
   // dialogs
   'change.title': 'Start fresh with new options? 🤖',
   'change.desc': 'Your current progress will be saved but paused.',

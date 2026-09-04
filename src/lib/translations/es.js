@@ -249,6 +249,15 @@ export default {
   'settings.deletion': 'Para solicitar la eliminación de tu cuenta y datos, contacta al soporte de Base44 por el canal oficial.',
   'settings.error': 'Algo salió mal. Inténtalo de nuevo.',
 
+  'weekly.title': 'Resumen semanal 📊',
+  'weekly.locked': 'Función de FirstDollar Plus ⭐',
+  'weekly.lockedSub': 'Desbloquea los resúmenes semanales y varios caminos de ingresos por $7.99/mes.',
+  'weekly.cta': 'Obtener FirstDollar Plus',
+  'weekly.tasksDone': 'tareas hechas',
+  'weekly.earned': 'ganado',
+  'weekly.noticed': 'SPARKY OBSERVÓ',
+  'weekly.loading': 'Revisando tu semana...',
+
   'change.title': '¿Empezar de nuevo con opciones nuevas? 🤖',
   'change.desc': 'Tu progreso actual se guardará pero quedará en pausa.',
   'change.yes': 'Sí, muéstrame opciones nuevas',

@@ -8,12 +8,13 @@ import NudgeCard from '@/components/workspace/NudgeCard';
 import { base44 } from '@/api/base44Client';
 import { askSparky } from '@/lib/sparkyAI';
 import { getMyProfile, getActivePath, getTasks, touchPath } from '@/lib/pathData';
+import { loadChat, appendChat } from '@/lib/sparkyMemory';
 import { useT } from '@/lib/i18n';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useT();
-  const [data, setData] = useState({ loading: true, profile: null, path: null, tasks: [] });
+  const [data, setData] = useState({ loading: true, profile: null, path: null, tasks: [], checkins: [], chat: null });
   const [chat, setChat] = useState(null); // { question, answer, loading }
   const [changeOpen, setChangeOpen] = useState(false);
   const [changing, setChanging] = useState(false);
@@ -21,8 +22,12 @@ export default function Dashboard() {
   useEffect(() => { (async () => {
     const [profile, path] = await Promise.all([getMyProfile(), getActivePath()]);
     if (!path) { navigate('/results'); return; }
-    const tasks = await getTasks(path.id);
-    setData({ loading: false, profile, path, tasks });
+    const [tasks, checkins, chat] = await Promise.all([
+      getTasks(path.id),
+      base44.entities.CheckIn.filter({ income_path_id: path.id }, '-check_in_date', 3),
+      loadChat(path.id)
+    ]);
+    setData({ loading: false, profile, path, tasks, checkins, chat });
   })(); }, []);
 
   const markDone = async task => {
@@ -42,13 +47,21 @@ export default function Dashboard() {
 
   const ask = async question => {
     setChat({ question, loading: true });
-    const answer = await askSparky(question, {
+    const result = await askSparky(question, {
       profile: data.profile,
       option: data.path.selected_option_json,
       path: data.path,
-      tasks: data.tasks
+      tasks: data.tasks,
+      checkins: data.checkins,
+      history: data.chat?.messages || []
     });
+    const answer = typeof result === 'string' ? result : String(result?.response || '');
     setChat({ question, answer, loading: false });
+    const stored = await appendChat(data.chat, data.path.id, [
+      { role: 'user', content: question },
+      { role: 'sparky', content: answer }
+    ]);
+    setData(d => ({ ...d, chat: stored }));
   };
 
   if (data.loading) return <MobileShell><div className="min-h-[680px] flex items-center justify-center bg-white"><Loader2 className="animate-spin text-[#5BC8C8]" size={32}/></div></MobileShell>;

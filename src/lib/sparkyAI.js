@@ -1,34 +1,7 @@
 import { base44 } from '@/api/base44Client';
-import { getLang, LANGUAGE_NAMES } from '@/lib/i18n';
+import { MODELS, coreBlock, profileSummary, unwrap, EARNINGS_DISCLAIMER } from '@/lib/promptCore';
 
-const MODEL = 'claude_sonnet_4_6';
-
-// Every generation must speak the user's chosen app language, flavored to their region.
-function languageRule(profile = {}) {
-  const language = LANGUAGE_NAMES[getLang()] || 'English';
-  return `Language rule: write ALL user-facing text values in ${language}. Adapt regional vocabulary, spelling, currency symbols, and local examples to the user's location ("${profile.location || 'unknown'}") — e.g. Brazilian vs European Portuguese, Latin American vs Spain Spanish, US vs UK English. Keep every JSON key exactly as specified (in English).`;
-}
-
-// Some models wrap structured output in a top-level "response" key (as an object or JSON string) — unwrap it.
-function unwrap(result, expectedKey) {
-  if (typeof result === 'string') {
-    try { result = JSON.parse(result); } catch { return result; }
-  }
-  if (result && typeof result === 'object' && !(expectedKey in result) && 'response' in result) {
-    return unwrap(result.response, expectedKey);
-  }
-  return result;
-}
-
-export const EARNINGS_DISCLAIMER = 'Actual earnings depend on location, demand, experience, pricing, and time invested.';
-
-const SAFETY_RULES = `Rules you must follow:
-- Never guarantee earnings or make unrealistic income promises. All income figures are estimates.
-- Never suggest illegal, unsafe, or regulated (financial/medical/legal) work unless the user mentioned qualifications.
-- Never recommend anything requiring certifications the user did not mention.
-- Respect the user's time, location, mobility, preferences, and startup budget.
-- Never recommend scams or questionable platforms.
-- Be warm, empathetic, practical, concise, nonjudgmental, and realistic. Never shame the user or call anything a failure.`;
+export { EARNINGS_DISCLAIMER, profileSummary };
 
 const optionSchema = {
   type: 'object',
@@ -51,26 +24,20 @@ const optionSchema = {
   required: ['title', 'one_sentence_description', 'why_this_fits_user', 'estimated_startup_cost', 'estimated_time_to_launch', 'estimated_time_to_first_income', 'realistic_starter_income_range', 'difficulty_level', 'social_interaction_level', 'remote_or_local', 'risks_or_requirements', 'first_goal', 'first_three_steps']
 };
 
-export function profileSummary(p = {}) {
-  return JSON.stringify({
-    name: p.name, location: p.location, situation: p.situation, urgency: p.timeline,
-    available_time_per_week: p.hours_per_week, assets_and_skills: p.selected_assets,
-    additional_notes: p.extra_skills_text
-  });
-}
-
 export async function generateOptions(profile, { rejected = [], reason = '', preferences = '' } = {}) {
   const rejectedText = rejected.length
     ? `Previously rejected ideas (do NOT repeat these): ${rejected.map(o => o.title).join('; ')}. The user rejected them because: "${reason}". New preferences: "${preferences}".`
     : '';
   const result = await base44.integrations.Core.InvokeLLM({
-    model: MODEL,
-    prompt: `You are Sparky, a warm and practical income coach. Based on this user's real onboarding profile, generate exactly TWO different, realistic income opportunities they can actually start. Personalize every field to their specific profile — reference what they told you in why_this_fits_user.
+    model: MODELS.research,
+    add_context_from_internet: true,
+    prompt: `${coreBlock(profile)}
+
+Task: generate exactly TWO different, realistic income opportunities this person can start now.
 User profile: ${profileSummary(profile)}
 ${rejectedText}
-${SAFETY_RULES}
-${languageRule(profile)}
-realistic_starter_income_range must read as an estimate (e.g. "$50–$250 per week, depending on local demand"). first_three_steps are 3 short concrete actions. risks_or_requirements are 2-4 practical safety/legal/platform notes.`,
+Use current, real-world information for their location: platforms and marketplaces that actually operate there, what people really charge, and current local demand. Prefer specific named platforms or channels over generic advice, and never invent one.
+Personalize why_this_fits_user by quoting back what they actually told you. realistic_starter_income_range must read as an estimate in their local currency (e.g. "50–250 per week, depending on local demand"). first_three_steps are 3 short concrete actions they can do this week. risks_or_requirements are 2-4 practical safety/legal/platform notes for their area.`,
     response_json_schema: {
       type: 'object',
       properties: { option_1: optionSchema, option_2: optionSchema },
@@ -86,12 +53,13 @@ realistic_starter_income_range must read as an estimate (e.g. "$50–$250 per we
 
 export async function generateExploreDetail(option, profile) {
   const result = await base44.integrations.Core.InvokeLLM({
-    model: MODEL,
-    prompt: `You are Sparky, a practical income coach. The user is exploring this income opportunity before committing: ${JSON.stringify(option)}
+    model: MODELS.research,
+    add_context_from_internet: true,
+    prompt: `${coreBlock(profile)}
+
+The user is deciding whether to commit to this income opportunity: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
-${SAFETY_RULES}
-${languageRule(profile)}
-Provide deeper, personalized explore detail for this exact opportunity and this exact user.`,
+Give deeper detail for THIS opportunity and THIS person, grounded in how it actually works in their area right now. likely_challenges: 3-4 things that realistically go wrong for beginners. safety_legal_considerations: 2-4 real requirements or precautions where they live (licences, permits, platform rules, meeting strangers safely).`,
     response_json_schema: {
       type: 'object',
       properties: {
@@ -107,12 +75,19 @@ Provide deeper, personalized explore detail for this exact opportunity and this 
 
 export async function generateActionPlan(option, profile) {
   const result = await base44.integrations.Core.InvokeLLM({
-    model: MODEL,
-    prompt: `You are Sparky, a practical income coach. The user selected this income path: ${JSON.stringify(option)}
+    model: MODELS.reasoning,
+    prompt: `${coreBlock(profile)}
+
+The user committed to this income path: ${JSON.stringify(option)}
 Their profile: ${profileSummary(profile)}
-${SAFETY_RULES}
-${languageRule(profile)}
-Create a personalized action plan specific to THIS opportunity and THIS user (never generic tasks). Include a first-$100 goal (first_goal, plus first_goal_amount as a number like 50 or 100), a longer-term goal, and 3-7 ordered starter tasks. Each task needs: title, description, why_it_matters, estimated_minutes (number), difficulty (Easy/Medium/Hard), instructions (3-5 short concrete steps), order (number starting at 1). Also include "tip": one short, practical, encouraging tip quote (one sentence) specific to this plan.`,
+
+Build the plan they will actually work from. Think about their real constraints first: ${profile.hours_per_week || 'limited'} hours a week, urgency "${profile.timeline || 'unknown'}", situation "${profile.situation || 'unknown'}", and what they already own or know. Then sequence the tasks so the earliest ones create money or a first customer, not preparation busywork.
+
+Return:
+- first_goal: their first concrete money milestone, and first_goal_amount as a number in their local currency (something reachable in 1-3 weeks at their available hours).
+- long_term_goal: where this path leads in a few months.
+- tip: one short practical sentence specific to this plan.
+- tasks: 3-7 ordered tasks, never generic. Each has title, description, why_it_matters (tie it to their goal), estimated_minutes (a number that fits their weekly hours), difficulty (Easy/Medium/Hard), instructions (3-5 steps concrete enough to follow without thinking — exact words to send, where to post, what to price), order starting at 1.`,
     response_json_schema: {
       type: 'object',
       properties: {
@@ -140,18 +115,40 @@ Create a personalized action plan specific to THIS opportunity and THIS user (ne
 }
 
 export async function askSparky(message, context = {}) {
+  const { profile = {}, option = {}, path = {}, tasks = [], history = [], checkins = [], nudge = null } = context;
   return await base44.integrations.Core.InvokeLLM({
-    model: MODEL,
-    prompt: `You are Sparky, a warm, empathetic, practical income coach helping the user with their CURRENT plan.
-${SAFETY_RULES}
-${languageRule(context.profile || {})}
-Current context:
-- User profile: ${profileSummary(context.profile || {})}
-- Selected income path: ${JSON.stringify(context.option || {})}
-- Active goal: ${context.path?.first_goal || ''} (earned so far: $${context.path?.income_total || 0})
-- Task list: ${JSON.stringify((context.tasks || []).map(t => ({ title: t.title, status: t.status, blocker: t.blocker_reason })))}
-- Recent conversation: ${JSON.stringify((context.history || []).slice(-6))}
-Response style: acknowledge the user in one short sentence, answer the immediate question practically, give ONE clear next action, and end with one relevant follow-up choice. Keep it brief — no long essays unless asked. Preferred tone examples: "Let's make the next step smaller." "You do not have to complete everything today."
-User says: "${message}"`
+    model: MODELS.fast,
+    prompt: `${coreBlock(profile)}
+
+You are mid-conversation with this person about their current plan.
+- Profile: ${profileSummary(profile)}
+- Income path: ${JSON.stringify(option)}
+- Goal: ${path.first_goal || ''} (target ${path.first_goal_amount || 0}, earned so far ${path.income_total || 0}, progress ${path.progress_percentage || 0}%)
+- Tasks: ${JSON.stringify(tasks.map(t => ({ title: t.title, status: t.status, blocker: t.blocker_reason })))}
+- Recent check-ins: ${JSON.stringify(checkins.slice(-3).map(c => ({ date: c.check_in_date, progress: c.progress_response, earned: c.amount_earned, blocker: c.blocker })))}
+${nudge ? `- They may be replying to today's message you sent: "${nudge.message}"` : ''}
+- Recent conversation (oldest first): ${JSON.stringify(history.slice(-8))}
+
+Use the conversation above so you never repeat yourself or ask what they already told you. Answer style: one short line that acknowledges them, then the practical answer, then ONE clear next action, then one short follow-up question. Max 120 words. At most two emojis.
+
+They just said: "${message}"`
+  });
+}
+
+// One short, specific observation for the weekly review.
+export async function weeklyInsight({ profile, path, tasks = [], checkins = [] }) {
+  const done = tasks.filter(t => t.status === 'complete').length;
+  return await base44.integrations.Core.InvokeLLM({
+    model: MODELS.fast,
+    prompt: `${coreBlock(profile)}
+
+Write this person's weekly review note: what actually happened, then the single most useful move for next week. Be specific to their real numbers — no generic praise, no filler.
+- Income path: ${path?.selected_option_json?.title || 'their path'}
+- Goal: ${path?.first_goal || ''} (target ${path?.first_goal_amount || 0})
+- Tasks: ${done} of ${tasks.length} complete. Pending: ${JSON.stringify(tasks.filter(t => t.status !== 'complete').map(t => t.title).slice(0, 5))}
+- Earned so far: ${path?.income_total || 0}
+- Recent check-ins: ${JSON.stringify(checkins.slice(-5).map(c => ({ date: c.check_in_date, progress: c.progress_response, earned: c.amount_earned, blocker: c.blocker })))}
+
+Max 60 words. Two short paragraphs at most. Return only the note text.`
   });
 }
