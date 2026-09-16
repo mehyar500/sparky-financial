@@ -141,7 +141,7 @@ export default {
   'results.header': '✨ Vamos explorar todas as suas opções\nantes de escolher uma.',
   'results.unlock': 'Desbloquear planos',
   'paywall.cta': 'Desbloquear meus planos personalizados e coaching por $7.99/mês',
-  'checkout.iframe': 'O pagamento funciona no app publicado. Abra o FirstDollar em uma nova aba para continuar.',
+  'checkout.iframe': 'O pagamento funciona no app publicado. Abra o SparkyDollar em uma nova aba para continuar.',
 
   'explore.income': 'Renda inicial típica: ',
   'explore.fastest': 'Caminho mais rápido: ',
@@ -214,7 +214,7 @@ export default {
   'coach.wa.cta': 'Conversar no WhatsApp',
 
   'paths.title': 'Meus caminhos 🗂️',
-  'paths.plusFeature': 'Meus caminhos é um recurso do FirstDollar Plus 🔒',
+  'paths.plusFeature': 'Meus caminhos é um recurso do SparkyDollar Plus 🔒',
   'paths.plusDesc': 'Tenha vários caminhos de renda ao mesmo tempo e alterne entre eles quando quiser.',
   'paths.back': '← Voltar ao espaço de trabalho',
   'paths.startNew': '＋ Começar um caminho novo',
@@ -236,7 +236,7 @@ export default {
 
   'settings.back': '← Espaço de trabalho',
   'settings.title': 'Configurações',
-  'settings.plus': 'FirstDollar Plus ⭐',
+  'settings.plus': 'SparkyDollar Plus ⭐',
   'settings.free': 'Plano grátis',
   'settings.myPlan': 'Meu plano',
   'settings.change': 'Mudar minha opção de renda',
@@ -250,9 +250,9 @@ export default {
   'settings.error': 'Algo deu errado. Tente novamente.',
 
   'weekly.title': 'Resumo semanal 📊',
-  'weekly.locked': 'Recurso do FirstDollar Plus ⭐',
+  'weekly.locked': 'Recurso do SparkyDollar Plus ⭐',
   'weekly.lockedSub': 'Libere os resumos semanais e vários caminhos de renda por $7,99/mês.',
-  'weekly.cta': 'Assinar o FirstDollar Plus',
+  'weekly.cta': 'Assinar o SparkyDollar Plus',
   'weekly.tasksDone': 'tarefas feitas',
   'weekly.earned': 'ganho',
   'weekly.noticed': 'SPARKY NOTOU',
@@ -261,7 +261,7 @@ export default {
   'change.title': 'Começar de novo com novas opções? 🤖',
   'change.desc': 'Seu progresso atual será salvo, mas ficará pausado.',
   'change.yes': 'Sim, me mostre novas opções',
-  'cancelDialog.title': 'Cancelar o FirstDollar Plus?',
+  'cancelDialog.title': 'Cancelar o SparkyDollar Plus?',
   'cancelDialog.desc': 'Você mantém o acesso Plus até o fim do período de cobrança atual. Todos os seus caminhos e progresso ficam salvos.',
   'cancelDialog.canceling': 'Cancelando...',
   'cancelDialog.yes': 'Sim, cancelar meu plano',

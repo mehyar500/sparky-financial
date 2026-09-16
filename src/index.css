@@ -28,6 +28,13 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --launch-night: 182 49% 12%;
+    --launch-panel: 180 38% 16%;
+    --launch-mint: 180 50% 66%;
+    --launch-paper: 48 33% 97%;
+    --launch-ink: 180 43% 16%;
+    --launch-muted: 180 19% 32%;
+    --launch-soft: 175 17% 75%;
     --radius: 0.5rem;
     --font-heading: 'Nunito', ui-sans-serif, system-ui, sans-serif;
     --font-body: 'Nunito', ui-sans-serif, system-ui, sans-serif;
@@ -44,6 +51,13 @@
   }
 
   .dark {
+    --launch-night: 182 49% 12%;
+    --launch-panel: 180 38% 16%;
+    --launch-mint: 180 50% 66%;
+    --launch-paper: 48 33% 97%;
+    --launch-ink: 180 43% 16%;
+    --launch-muted: 180 19% 32%;
+    --launch-soft: 175 17% 75%;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
@@ -89,4 +103,10 @@
   body {
     @apply bg-background text-foreground font-body;
   }
+}
+
+@layer components {
+  .launch-button { @apply inline-flex items-center justify-center gap-2 rounded-full bg-launch-mint text-launch-ink font-extrabold px-6 py-3.5 transition-colors hover:bg-launch-paper; }
+  .launch-page :is(a, button, input, select):focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+  .launch-glow { background-image: radial-gradient(ellipse at 85% 48%, hsl(var(--launch-mint) / .12), transparent 52%); }
 }

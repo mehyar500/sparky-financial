@@ -161,7 +161,7 @@ export default {
   'results.header': "✨ Let's explore all your choices\nbefore you choose one.",
   'results.unlock': 'Unlock plans',
   'paywall.cta': 'Unlock my personalized plans & coaching for $7.99/month',
-  'checkout.iframe': 'Checkout works from the published app. Open FirstDollar in a new tab to continue.',
+  'checkout.iframe': 'Checkout works from the published app. Open SparkyDollar in a new tab to continue.',
 
   // explore
   'explore.income': 'Typical Starter Income: ',
@@ -241,7 +241,7 @@ export default {
 
   // my paths
   'paths.title': 'My Paths 🗂️',
-  'paths.plusFeature': 'My Paths is a FirstDollar Plus feature 🔒',
+  'paths.plusFeature': 'My Paths is a SparkyDollar Plus feature 🔒',
   'paths.plusDesc': 'Run multiple income paths at once and switch between them anytime.',
   'paths.back': '← Back to workspace',
   'paths.startNew': '＋ Start a Brand New Path',
@@ -264,7 +264,7 @@ export default {
   // settings
   'settings.back': '← Workspace',
   'settings.title': 'Settings',
-  'settings.plus': 'FirstDollar Plus ⭐',
+  'settings.plus': 'SparkyDollar Plus ⭐',
   'settings.free': 'Free plan',
   'settings.myPlan': 'My Plan',
   'settings.change': 'Change my income option',
@@ -279,9 +279,9 @@ export default {
 
   // weekly review
   'weekly.title': 'Weekly review 📊',
-  'weekly.locked': 'FirstDollar Plus feature ⭐',
+  'weekly.locked': 'SparkyDollar Plus feature ⭐',
   'weekly.lockedSub': 'Unlock weekly reviews and multiple income streams for $7.99/month.',
-  'weekly.cta': 'Get FirstDollar Plus',
+  'weekly.cta': 'Get SparkyDollar Plus',
   'weekly.tasksDone': 'tasks done',
   'weekly.earned': 'earned',
   'weekly.noticed': 'SPARKY NOTICED',
@@ -291,7 +291,7 @@ export default {
   'change.title': 'Start fresh with new options? 🤖',
   'change.desc': 'Your current progress will be saved but paused.',
   'change.yes': 'Yes, show me new options',
-  'cancelDialog.title': 'Cancel FirstDollar Plus?',
+  'cancelDialog.title': 'Cancel SparkyDollar Plus?',
   'cancelDialog.desc': "You'll keep Plus access until the end of your current billing period. All your paths and progress stay saved.",
   'cancelDialog.canceling': 'Canceling...',
   'cancelDialog.yes': 'Yes, cancel my plan',

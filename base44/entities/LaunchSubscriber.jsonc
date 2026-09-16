@@ -1,0 +1,80 @@
+{
+  "name": "LaunchSubscriber",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "unsubscribed"
+      ],
+      "default": "pending"
+    },
+    "token": {
+      "type": "string"
+    },
+    "consent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "consent_text": {
+      "type": "string"
+    },
+    "confirmed_at": {
+      "type": "string"
+    },
+    "unsubscribed_at": {
+      "type": "string"
+    },
+    "confirmation_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "launch_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "launch_sent_at": {
+      "type": "string"
+    },
+    "next_email_at": {
+      "type": "string"
+    },
+    "email_error": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "email",
+    "status",
+    "token",
+    "consent_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

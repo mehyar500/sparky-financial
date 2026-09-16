@@ -10,6 +10,13 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+        'launch-night': 'hsl(var(--launch-night))',
+        'launch-panel': 'hsl(var(--launch-panel))',
+        'launch-mint': 'hsl(var(--launch-mint))',
+        'launch-paper': 'hsl(var(--launch-paper))',
+        'launch-ink': 'hsl(var(--launch-ink))',
+        'launch-muted': 'hsl(var(--launch-muted))',
+        'launch-soft': 'hsl(var(--launch-soft))',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

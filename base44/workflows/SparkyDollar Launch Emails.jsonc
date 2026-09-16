@@ -1,0 +1,45 @@
+{
+  "description": "Send queued waitlist confirmations, then the launch announcement to confirmed subscribers from October 16, 2026 at 23:41 UTC. Sending requires a connected custom domain; failed sends remain queued.",
+  "name": "SparkyDollar Launch Emails",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "sparkydollar_launch_emails",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_waitlist_emails": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "sendLaunchEmails",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Send waitlist emails",
+            "description": "Confirmations now; launch announcement on release day"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "interval",
+      "cron_expression": null,
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": 5,
+      "interval_unit": "minutes",
+      "interval_anchor": "2026-09-16T23:41:00Z",
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

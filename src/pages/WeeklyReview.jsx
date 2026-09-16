@@ -8,7 +8,7 @@ import { weeklyInsight } from '@/lib/sparkyAI';
 import { useT } from '@/lib/i18n';
 
 async function upgrade(profileId) {
-  if (window.self !== window.top) { alert('Checkout works from the published app. Open FirstDollar in a new tab to continue.'); return; }
+  if (window.self !== window.top) { alert('Checkout works from the published app. Open SparkyDollar in a new tab to continue.'); return; }
   const response = await base44.functions.invoke('createCheckout', { origin: window.location.origin, profileId });
   window.location.href = response.data.url;
 }

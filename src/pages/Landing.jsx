@@ -21,7 +21,7 @@ export default function Landing() {
   return <MobileShell><div className="min-h-[680px] flex flex-col bg-white">
     <div className="bg-[#183b3b] text-white px-7 pt-12 pb-10 rounded-b-[2.5rem] relative">
       <div className="absolute right-4 top-4"><LanguagePicker dark /></div>
-      <p className="text-[#7dd4d4] text-xs font-black tracking-[.2em]">FIRSTDOLLAR</p>
+      <p className="text-[#7dd4d4] text-xs font-black tracking-[.2em]">SPARKYDOLLAR</p>
       <h1 className="text-4xl font-black leading-tight mt-5">{t('landing.headline')}</h1>
       <p className="text-white/70 mt-4 leading-6">{t('landing.sub')}</p>
       <div className="mt-7"><SparkyAvatar size={110} expression="happy"/></div>

@@ -42,6 +42,12 @@ import Terms from './pages/Terms';
 import Settings from './pages/Settings';
 import WeeklyReview from './pages/WeeklyReview';
 import TaskCoach from './pages/TaskCoach';
+import Home from '@/pages/Home';
+import WaitlistPreferences from '@/pages/WaitlistPreferences';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
@@ -61,6 +67,12 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/waitlist" element={<WaitlistPreferences />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<Terms />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
