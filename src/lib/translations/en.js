@@ -2,6 +2,7 @@ export default {
   // common
   'common.continue': 'Continue',
   'common.cancel': 'Cancel',
+  'common.back': 'Go back',
   'common.option': 'Option {n}',
   'common.checkItOut': 'Check it out!',
   'common.pickAll': '(Pick all that you got!)',

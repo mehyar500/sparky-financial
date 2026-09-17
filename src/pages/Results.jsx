@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, ChevronUp, Loader2, Lock } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, Loader2, Lock } from 'lucide-react';
 import MobileShell from '@/components/MobileShell';
 import WaveHeader from '@/components/WaveHeader';
 import PaywallCTA from '@/components/results/PaywallCTA';
@@ -45,9 +45,19 @@ export default function Results() {
 
   return <MobileShell>
     <div className="flex flex-col min-h-[680px] bg-[#183b3b]">
-      <WaveHeader height={95}>
-        <p className="text-[#1e5555] font-bold text-sm text-center leading-snug whitespace-pre-line">{t('results.header')}</p>
-      </WaveHeader>
+      <div className="relative flex-shrink-0">
+        <WaveHeader height={95}>
+          <p className="text-[#1e5555] font-bold text-sm text-center leading-snug whitespace-pre-line">{t('results.header')}</p>
+        </WaveHeader>
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          aria-label={t('common.back')}
+          className="absolute left-3 top-3 flex h-11 w-11 items-center justify-center rounded-full text-[#1e5555] hover:bg-white/30 transition-colors"
+        >
+          <ArrowLeft size={22} />
+        </button>
+      </div>
 
       {/* Top half — Option 1 */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6 text-center">

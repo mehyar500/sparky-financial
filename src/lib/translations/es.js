@@ -1,6 +1,7 @@
 export default {
   'common.continue': 'Continuar',
   'common.cancel': 'Cancelar',
+  'common.back': 'Volver',
   'common.option': 'Opción {n}',
   'common.checkItOut': '¡Vamos a verlo!',
   'common.pickAll': '(¡Marca todo lo que tengas!)',
