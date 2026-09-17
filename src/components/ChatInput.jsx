@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 
-export default function ChatInput({ placeholder = 'Tell Sparky here!', onSubmit, className = '' }) {
+export default function ChatInput({ placeholder = 'Tell Sparky here!', onSubmit, className = '', disabled = false }) {
   const [value, setValue] = useState('');
 
   const handleSubmit = () => {
-    if (value.trim()) {
+    if (!disabled && value.trim()) {
       onSubmit(value.trim());
       setValue('');
     }
@@ -16,6 +16,8 @@ export default function ChatInput({ placeholder = 'Tell Sparky here!', onSubmit,
       <div className="flex-1 relative">
         <input
           type="text"
+          disabled={disabled}
+          aria-label={placeholder}
           value={value}
           onChange={e => setValue(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSubmit()}
@@ -24,9 +26,9 @@ export default function ChatInput({ placeholder = 'Tell Sparky here!', onSubmit,
         />
         <button
           onClick={handleSubmit}
-          disabled={!value.trim()}
+          disabled={disabled || !value.trim()}
           aria-label="Send"
-          className={`absolute right-3 top-1/2 -translate-y-1/2 transition-colors ${value.trim() ? 'text-[#5BC8C8] hover:text-[#2c9a9a]' : 'text-gray-300 cursor-default'}`}
+          className={`absolute right-0 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center transition-colors ${value.trim() ? 'text-[#5BC8C8] hover:text-[#2c9a9a]' : 'text-gray-300 cursor-default'}`}
         >
           <Send size={16} />
         </button>

@@ -6,6 +6,7 @@ import WaveHeader from '@/components/WaveHeader';
 import PaywallCTA from '@/components/results/PaywallCTA';
 import { base44 } from '@/api/base44Client';
 import { startCheckout } from '@/lib/checkout';
+import { generateOptions } from '@/lib/sparkyAI';
 import { getMyProfile, getActiveRecSet } from '@/lib/pathData';
 import { useT } from '@/lib/i18n';
 
@@ -13,19 +14,30 @@ export default function Results() {
   const navigate = useNavigate();
   const { t } = useT();
   const [recSet, setRecSet] = useState(null), [profile, setProfile] = useState(null), [loading, setLoading] = useState(true);
+  const [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
 
   useEffect(() => { (async () => {
+    setLoading(true); setError('');
+    try {
     let [p, r] = await Promise.all([getMyProfile(), getActiveRecSet()]);
+    if (!p) { navigate('/onboarding/name', { replace: true }); return; }
     const sessionId = new URLSearchParams(window.location.search).get('session_id');
     if (sessionId && p && !p.is_paid) {
       const res = await base44.functions.invoke('verifyCheckout', { sessionId, profileId: p.id });
       if (res.data.paid) p = { ...p, is_paid: true };
     }
-    setProfile(p); setRecSet(r); setLoading(false);
-    if (!r) navigate('/onboarding/processing');
-  })(); }, []);
+    if (!r) {
+      const options = await generateOptions(p);
+      r = await base44.entities.RecommendationSet.create({ option_1_json: options.option_1, option_2_json: options.option_2, rejected_options: [], date_generated: new Date().toISOString(), status: 'active' });
+    }
+    setProfile(p); setRecSet(r);
+    } catch (e) { setError(e.message || t('processing.error')); }
+    finally { setLoading(false); }
+  })(); }, [attempt]);
 
   if (loading) return <MobileShell><div className="min-h-[680px] flex items-center justify-center bg-[#183b3b]"><Loader2 className="animate-spin text-[#5BC8C8]" size={32}/></div></MobileShell>;
+
+  if (error) return <MobileShell><div className="min-h-[680px] flex flex-col items-center justify-center p-6 text-center"><p role="alert" className="text-destructive">{error}</p><button onClick={() => setAttempt(n => n + 1)} className="mt-4 rounded-full bg-launch-mint px-6 py-3 font-bold text-launch-ink">{t('processing.retry')}</button></div></MobileShell>;
 
   const isPaid = profile?.is_paid;
   const opt1 = recSet?.option_1_json || {}, opt2 = recSet?.option_2_json || {};

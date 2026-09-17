@@ -109,4 +109,21 @@
   .launch-button { @apply inline-flex items-center justify-center gap-2 rounded-full bg-launch-mint text-launch-ink font-extrabold px-6 py-3.5 transition-colors hover:bg-launch-paper; }
   .launch-page :is(a, button, input, select):focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
   .launch-glow { background-image: radial-gradient(ellipse at 85% 48%, hsl(var(--launch-mint) / .12), transparent 52%); }
+  .app-shell {
+    --app-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    min-height: 100dvh;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    overflow-wrap: anywhere;
+  }
+  .app-shell > [class*="min-h-[680px]"] { min-height: var(--app-height); }
+  .app-chat-screen { height: var(--app-height); min-height: 0; }
+  .app-shell :is(button:not([role="switch"]), input, select) { min-height: 44px; }
+  .app-shell :is(a, button, input, select):focus-visible { outline: 3px solid hsl(var(--launch-muted)); outline-offset: 3px; }
+  @media (max-width: 639px) {
+    .app-shell :is(input, textarea, select) { font-size: 16px; }
+  }
+  @media (min-width: 640px) {
+    .app-shell { --app-height: max(680px, calc(100dvh - 2rem)); min-height: var(--app-height); overflow: hidden; }
+  }
 }

@@ -1,18 +1,11 @@
 import { getLang, LANGUAGE_NAMES } from '@/lib/i18n';
 
-// One place for model choice, so each call gets the right brain for the job.
-export const MODELS = {
-  // Deep, high-stakes personalization (the action plan the user actually works from).
-  reasoning: 'claude_opus_4_8',
-  // Needs real, current local facts: platforms, rates, demand, rules.
-  research: 'gemini_3_1_pro',
-  // Short conversational turns and notes — fast and cheap.
-  fast: 'gpt_5_mini'
-};
+// The same requested model powers every text-generation request.
+export const MODELS = { reasoning: 'gpt_6_astra', research: 'gpt_6_astra', fast: 'gpt_6_astra' };
 
 export const EARNINGS_DISCLAIMER = 'Actual earnings depend on location, demand, experience, pricing, and time invested.';
 
-export const IDENTITY = `You are Sparky, a warm, direct, action-first income coach inside the SparkyDollar app. Your only job: get this person to their first real money, one concrete step at a time. You stay with them until they earn.`;
+export const IDENTITY = `You are Sparky, a warm, direct income coach inside SparkyDollar. Help this person reach their first real paid result with the smallest feasible next action, then help them repeat what works. Diagnose constraints before recommending: time, skills, budget, location, tools and customer access. Prefer a narrow buyer, a concrete deliverable, a small paid pilot and respectful outreach over courses, logo design or endless setup. If ChatGPT or Claude can reduce delivery time, name the tool, provide a reusable prompt with input placeholders, explain human quality checks and include any tool cost. Never assume users have paid tools, programming skills or permission to upload client data. Use anonymized or authorized inputs only. Measure actions, replies, conversions, delivery time and actual money received; adapt after evidence, not hype. Do not claim to have scheduled, saved, sent, browsed or changed anything unless a tool actually succeeded. A text-only response gives guidance, not an executed action.`;
 
 export const SAFETY_RULES = `Rules you must follow:
 - Never guarantee earnings. Every income figure is an estimate, and when you mention money the user could make, say plainly that results vary (${EARNINGS_DISCLAIMER}).
@@ -23,7 +16,7 @@ export const SAFETY_RULES = `Rules you must follow:
 
 // Language, currency, date and place — the things every prompt silently got wrong before.
 export function localeBlock(profile = {}) {
-  const language = LANGUAGE_NAMES[profile.language || getLang()] || 'English';
+  const language = LANGUAGE_NAMES[getLang() || profile.language] || 'English';
   const now = new Date();
   return `Locale and time:
 - Write ALL user-facing text in ${language}. Match regional vocabulary and spelling to the user's location ("${profile.location || 'unknown'}") — Brazilian vs European Portuguese, Latin American vs Spain Spanish, US vs UK English.

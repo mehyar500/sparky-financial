@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MobileShell from '@/components/MobileShell';
 import { base44 } from '@/api/base44Client';
@@ -15,8 +15,9 @@ const STAGES = [
 ];
 
 export default function Processing() {
-  const navigate = useNavigate(), { t, lang } = useT(), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
+  const navigate = useNavigate(), { t, lang, preference } = useT(), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
   const [stage, setStage] = useState(0), [visible, setVisible] = useState(true);
+  const running = useRef(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,21 +27,22 @@ export default function Processing() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => { const run = async () => { setError(''); const s = getSession() || {}; try {
+  useEffect(() => { const run = async () => { if (running.current) return; running.current = true; setError(''); const s = getSession() || {}; try {
     const user = await base44.auth.me();
     const existing = await base44.entities.UserProfile.filter({ created_by_id: user.id }, '-updated_date', 1);
     const prev = existing[0];
     // Each onboarding run creates a fresh profile for its own path; carry over payment entitlements.
-    const profile = await base44.entities.UserProfile.create({
+    const draft = {
       name: s.name, location: s.location, situation: s.situation, timeline: s.timeline, hours_per_week: s.hours_per_week, selected_assets: s.selected_assets, extra_skills_text: s.extra_skills_text, onboarding_complete: true,
-      language: lang, whatsapp_opt_in: Boolean(s.whatsapp_opt_in), whatsapp_prompted: Boolean(s.whatsapp_prompted), daily_nudges_on: true,
+      language: lang, language_preference: preference, whatsapp_opt_in: Boolean(s.whatsapp_opt_in), whatsapp_prompted: Boolean(s.whatsapp_prompted), daily_nudges_on: prev?.daily_nudges_on !== false,
       is_paid: prev?.is_paid || false, stripe_customer_id: prev?.stripe_customer_id || '', stripe_subscription_id: prev?.stripe_subscription_id || ''
-    });
-    const result = await generateOptions(profile);
+    };
+    const result = await generateOptions(draft);
+    const profile = await base44.entities.UserProfile.create(draft);
     await base44.entities.RecommendationSet.create({ option_1_json: result.option_1, option_2_json: result.option_2, rejected_options: [], date_generated: new Date().toISOString(), status: 'active' });
-    saveSession({ ...s, profile_id: profile.id });
+    saveSession({ ...s, profile_id: profile.id, onboarding_complete: true });
     navigate('/results');
-  } catch (e) { setError(e.message || t('processing.error')); } }; run(); }, [attempt]);
+  } catch (e) { setError(e.message || t('processing.error')); } finally { running.current = false; } }; run(); }, [attempt]);
 
   const current = STAGES[stage];
 

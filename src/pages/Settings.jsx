@@ -4,6 +4,7 @@ import MobileShell from '@/components/MobileShell';
 import ChangeOptionDialog from '@/components/ChangeOptionDialog';
 import CancelPlanDialog from '@/components/CancelPlanDialog';
 import LanguagePicker from '@/components/LanguagePicker';
+import ReminderSettings from '@/components/settings/ReminderSettings';
 import { format } from 'date-fns';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
@@ -48,7 +49,7 @@ export default function Settings() {
         <p className="text-sm text-gray-500">{user?.email}</p>
         <span className="inline-block bg-teal-50 text-[#287c7c] text-xs font-bold px-3 py-1 rounded-full mt-3">{profile === null ? '...' : profile?.is_paid ? t('settings.plus') : t('settings.free')}</span>
       </div>
-      <div className="bg-white rounded-2xl p-5 mt-4 flex items-center justify-between">
+      <div className="bg-white rounded-2xl p-5 mt-4 flex flex-wrap items-center justify-between gap-3">
         <p className="font-bold text-[#183b3b] text-sm">🌐 {t('common.language')}</p>
         <LanguagePicker />
       </div>
@@ -62,6 +63,7 @@ export default function Settings() {
           <p className="text-xs text-gray-500 text-center mt-3 bg-gray-50 rounded-xl px-3 py-2.5">{cancel.until ? t('settings.canceledUntil', { date: format(new Date(cancel.until), 'MMMM d, yyyy') }) : t('settings.canceled')}</p>
         )}
       </div>
+      <ReminderSettings profile={profile} onChange={setProfile} />
       <div className="bg-white rounded-2xl mt-4 divide-y">
         <Link className="block p-4 text-sm" to="/privacy">{t('settings.privacy')}</Link>
         <Link className="block p-4 text-sm" to="/terms">{t('settings.terms')}</Link>

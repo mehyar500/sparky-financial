@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AppSignInRedirect from '@/components/auth/AppSignInRedirect';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
@@ -77,7 +78,7 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<Terms />} />
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={IS_MARKETING_HOST ? "/app" : "/"} replace />} />}>
+      <Route element={<ProtectedRoute unauthenticatedElement={<AppSignInRedirect />} />}>
       <Route path="/onboarding/name" element={<OnboardingName />} />
       <Route path="/onboarding/location" element={<OnboardingLocation />} />
       <Route path="/onboarding/situation" element={<OnboardingSituation />} />

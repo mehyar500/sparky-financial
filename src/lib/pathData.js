@@ -12,19 +12,22 @@ export async function getMyProfile() {
 }
 
 export async function getActiveRecSet() {
-  const rows = await base44.entities.RecommendationSet.filter({ status: 'active' }, '-created_date', 1);
+  const user = await base44.auth.me();
+  const rows = await base44.entities.RecommendationSet.filter({ created_by_id: user.id, status: 'active' }, '-created_date', 1);
   return rows[0] || null;
 }
 
-export async function getActivePath() {
-  const storedId = getActivePathId();
+export async function getActivePath(requestedId) {
+  const user = await base44.auth.me();
+  const storedId = requestedId || getActivePathId();
   if (storedId) {
-    try {
-      const path = await base44.entities.IncomePath.get(storedId);
-      if (path && path.status === 'active') return path;
-    } catch { /* stored path gone — fall back below */ }
+    const matches = await base44.entities.IncomePath.filter({ id: storedId, created_by_id: user.id }, '-updated_date', 1);
+    const path = matches[0];
+    if (path && (requestedId || path.status === 'active')) { setActivePathId(path.id); return path; }
+    if (requestedId) return null;
   }
-  const rows = await base44.entities.IncomePath.filter({ status: 'active' }, '-updated_date', 1);
+  const rows = await base44.entities.IncomePath.filter({ created_by_id: user.id, status: 'active' }, '-updated_date', 1);
+  if (rows[0]) setActivePathId(rows[0].id);
   return rows[0] || null;
 }
 

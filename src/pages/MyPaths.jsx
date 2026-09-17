@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import MobileShell from '@/components/MobileShell';
 import WaveHeader from '@/components/WaveHeader';
 import SparkyImage from '@/components/SparkyImage';
@@ -68,7 +68,7 @@ export default function MyPaths() {
         <p className="text-[#1e5555] font-black text-lg">{t('paths.title')}</p>
       </WaveHeader>
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-8 bg-gray-50">
-        <button onClick={() => setSheetOpen(true)} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-3.5 font-bold text-sm hover:bg-[#7dd4d4] transition-colors">{t('paths.startNew')}</button>
+        <button onClick={() => setSheetOpen(true)} className="w-full flex items-center justify-center gap-2 bg-launch-mint text-launch-ink rounded-full py-3.5 font-bold text-sm"><Plus size={20} aria-hidden="true"/>{t('ideas.new')}</button>
 
         {paths.length === 0 ? (
           <div className="flex flex-col items-center text-center mt-14 px-4">

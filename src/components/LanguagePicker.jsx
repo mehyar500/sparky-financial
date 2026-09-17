@@ -1,40 +1,34 @@
 import React from 'react';
 import { LANGUAGES, useT } from '@/lib/i18n';
-import { base44 } from '@/api/base44Client';
 
-// The picked language is also stored on the profile, so emails and the coach agent speak it too.
-async function persistLanguage(code) {
-  try {
-    const user = await base44.auth.me();
-    const rows = await base44.entities.UserProfile.filter({ created_by_id: user.id }, '-updated_date', 1);
-    if (rows[0]) await base44.entities.UserProfile.update(rows[0].id, { language: code });
-  } catch { /* not signed in yet — onboarding will save it */ }
-}
 
 export default function LanguagePicker({ dark = false, className = '' }) {
-  const { lang, setLang } = useT();
-  const pick = code => { setLang(code); persistLanguage(code); };
+  const { preference, setLang, saving, error, t } = useT();
+  const choices = [{ code: 'auto', label: t('language.auto'), name: t('language.autoHint') }, ...LANGUAGES];
 
   return (
-    <div className={`flex items-center justify-center gap-1.5 ${className}`} role="group" aria-label="Language">
-      {LANGUAGES.map(l => {
-        const active = l.code === lang;
+    <div className={`flex flex-wrap items-center justify-center gap-1 ${className}`} role="group" aria-label="Language">
+      {choices.map(l => {
+        const active = l.code === preference;
         return (
           <button
             key={l.code}
             type="button"
-            onClick={() => pick(l.code)}
+            onClick={() => setLang(l.code)}
+            disabled={saving}
+            aria-pressed={active}
             title={l.name}
             className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
               active
                 ? 'bg-[#5BC8C8] text-[#183b3b]'
-                : dark ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-[#183b3b]'
+                : dark ? 'text-launch-soft hover:text-launch-paper' : 'text-launch-muted hover:text-launch-ink'
             }`}
           >
             {l.label}
           </button>
         );
       })}
+      {error && <p role="alert" className="basis-full text-xs text-destructive">{error}</p>}
     </div>
   );
 }

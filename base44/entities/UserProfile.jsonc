@@ -101,6 +101,15 @@
     "language": {
       "type": "string"
     },
+    "language_preference": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "en",
+        "es",
+        "pt"
+      ]
+    },
     "whatsapp_opt_in": {
       "type": "boolean"
     },
