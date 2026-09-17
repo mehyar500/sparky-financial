@@ -68,6 +68,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={IS_MARKETING_HOST ? <Home /> : <Landing />} />
+      <Route path="/app" element={<Landing />} />
       <Route path="/home" element={IS_MARKETING_HOST ? <Navigate to="/" replace /> : <Home />} />
       <Route path="/waitlist" element={<WaitlistPreferences />} />
       <Route path="/login" element={<Login />} />
@@ -76,7 +77,7 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<Terms />} />
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to={IS_MARKETING_HOST ? "/app" : "/"} replace />} />}>
       <Route path="/onboarding/name" element={<OnboardingName />} />
       <Route path="/onboarding/location" element={<OnboardingLocation />} />
       <Route path="/onboarding/situation" element={<OnboardingSituation />} />
