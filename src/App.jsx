@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import { LanguageProvider } from '@/lib/i18n';
+import { IS_MARKETING_HOST } from '@/components/launch/launchDomains';
 
 // Pages
 import Landing from './pages/Landing';
@@ -66,8 +67,8 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/home" element={<Home />} />
+      <Route path="/" element={IS_MARKETING_HOST ? <Home /> : <Landing />} />
+      <Route path="/home" element={IS_MARKETING_HOST ? <Navigate to="/" replace /> : <Home />} />
       <Route path="/waitlist" element={<WaitlistPreferences />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

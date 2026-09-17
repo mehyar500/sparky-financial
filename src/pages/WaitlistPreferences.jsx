@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { HOME_HREF } from '@/components/launch/launchDomains';
 import { Loader2, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useT } from '@/lib/i18n';
@@ -25,7 +25,7 @@ export default function WaitlistPreferences() {
         <button className="min-h-12 border border-launch-mint/40 text-launch-paper font-bold rounded-full px-5 py-3 disabled:opacity-60" disabled={busy} onClick={() => act('unsubscribe')}>{busy ? <Loader2 size={18} className="animate-spin mx-auto"/> : copy.remove}</button>
       </div>}
       {error && <p role="alert" className="text-launch-paper mt-4">{error}</p>}
-      <Link to="/home" className="inline-block underline text-sm text-launch-soft py-4 mt-5">{copy.back}</Link>
+      <a href={HOME_HREF} className="inline-block underline text-sm text-launch-soft py-4 mt-5">{copy.back}</a>
     </section>
   </main>;
 }

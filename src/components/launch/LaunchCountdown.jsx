@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { APP_HREF } from '@/components/launch/launchDomains';
 import { LAUNCH_AT } from '@/components/launch/launchContent';
 
 export default function LaunchCountdown({ copy }) {
@@ -14,7 +14,7 @@ export default function LaunchCountdown({ copy }) {
       <div><p className="text-xs font-bold tracking-[.16em] text-launch-mint">{copy.launch}</p><p className="mt-2 text-launch-soft text-sm">{copy.date}</p></div>
       {remaining > 0 ? <div className="mt-7 flex justify-center gap-5 md:mt-0 md:gap-8" role="timer" aria-label={copy.date}>
         {values.map((value, i) => <div key={i} className="text-center"><p className="text-3xl md:text-4xl font-black tabular-nums text-launch-paper">{String(value).padStart(2, '0')}</p><p className="text-xs text-launch-soft mt-1">{[copy.days, copy.hours, copy.minutes, copy.seconds][i]}</p></div>)}
-      </div> : <Link to="/" className="launch-button mt-5 md:mt-0">{copy.open}</Link>}
+      </div> : <a href={APP_HREF} className="launch-button mt-5 md:mt-0">{copy.open}</a>}
     </div>
   </section>;
 }
