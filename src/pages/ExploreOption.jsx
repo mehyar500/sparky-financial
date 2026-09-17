@@ -47,11 +47,9 @@ export default function ExploreOption() {
           <h1 className="text-white font-black text-3xl mt-1 leading-tight">{o.title}</h1>
         </div>
 
-        <div className="mt-6 space-y-3 text-center text-sm">
+        <div className="mt-5 space-y-4 text-center text-sm">
+          <p className="text-white/90 leading-relaxed">{o.one_sentence_description}</p>
           <p><span className="text-[#5BC8C8] font-bold">{t('explore.income')}</span><span className="text-white font-bold">{o.realistic_starter_income_range}</span></p>
-          {num === 1
-            ? <p><span className="text-[#5BC8C8] font-bold">{t('explore.fastest')}</span><span className="text-white font-bold">{o.estimated_time_to_first_income}</span></p>
-            : <p><span className="text-[#5BC8C8] font-bold">{t('explore.bestFor')}</span><span className="text-white font-bold">{o.one_sentence_description}</span></p>}
         </div>
 
         <div className="mt-6 text-center">
