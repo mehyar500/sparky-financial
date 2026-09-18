@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AppSignInRedirect from '@/components/auth/AppSignInRedirect';
+import AppSettingsShortcut from '@/components/AppSettingsShortcut';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
@@ -67,7 +68,9 @@ const AuthenticatedApp = () => {
   }
 
   return (
-    <Routes>
+    <>
+      <AppSettingsShortcut />
+      <Routes>
       <Route path="/" element={IS_MARKETING_HOST ? <Home /> : <Landing />} />
       <Route path="/app" element={<Landing />} />
       <Route path="/home" element={IS_MARKETING_HOST ? <Navigate to="/" replace /> : <Home />} />
@@ -114,7 +117,8 @@ const AuthenticatedApp = () => {
       <Route path="/weekly-review" element={<WeeklyReview />} />
       <Route path="/coach" element={<TaskCoach />} />
       </Route>
-    </Routes>
+      </Routes>
+    </>
   );
 };
 
