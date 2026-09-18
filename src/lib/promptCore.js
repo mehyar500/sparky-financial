@@ -32,8 +32,8 @@ export function coreBlock(profile = {}) {
 export function profileSummary(p = {}) {
   return JSON.stringify({
     name: p.name, location: p.location, situation: p.situation, urgency: p.timeline,
-    available_time_per_week: p.hours_per_week, assets_and_skills: p.selected_assets,
-    asset_counts: p.asset_counts, additional_notes: p.extra_skills_text
+    available_time_per_week: p.hours_per_week, questionnaire_selections_secondary: p.selected_assets,
+    asset_counts: p.asset_counts, user_described_special_skills: p.extra_skills_text
   });
 }
 
