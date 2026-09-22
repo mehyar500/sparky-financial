@@ -141,7 +141,7 @@ export default {
 
   'results.header': '✨ Exploremos todas tus opciones\nantes de elegir una.',
   'results.unlock': 'Desbloquear planes',
-  'paywall.cta': 'Desbloquear mis planes personalizados y coaching por $7.99/mes',
+  'paywall.cta': 'Desbloquear mis planes personalizados y coaching por $4.99/mes',
   'checkout.iframe': 'El pago funciona desde la app publicada. Abre SparkyDollar en una pestaña nueva para continuar.',
 
   'explore.income': 'Ingreso inicial típico: ',
@@ -252,7 +252,7 @@ export default {
 
   'weekly.title': 'Resumen semanal 📊',
   'weekly.locked': 'Función de SparkyDollar Plus ⭐',
-  'weekly.lockedSub': 'Desbloquea los resúmenes semanales y varios caminos de ingresos por $7.99/mes.',
+  'weekly.lockedSub': 'Desbloquea los resúmenes semanales y varios caminos de ingresos por $4.99/mes.',
   'weekly.cta': 'Obtener SparkyDollar Plus',
   'weekly.tasksDone': 'tareas hechas',
   'weekly.earned': 'ganado',

@@ -161,7 +161,7 @@ export default {
   // results
   'results.header': "✨ Let's explore all your choices\nbefore you choose one.",
   'results.unlock': 'Unlock plans',
-  'paywall.cta': 'Unlock my personalized plans & coaching for $7.99/month',
+  'paywall.cta': 'Unlock my personalized plans & coaching for $4.99/month',
   'checkout.iframe': 'Checkout works from the published app. Open SparkyDollar in a new tab to continue.',
 
   // explore
@@ -281,7 +281,7 @@ export default {
   // weekly review
   'weekly.title': 'Weekly review 📊',
   'weekly.locked': 'SparkyDollar Plus feature ⭐',
-  'weekly.lockedSub': 'Unlock weekly reviews and multiple income streams for $7.99/month.',
+  'weekly.lockedSub': 'Unlock weekly reviews and multiple income streams for $4.99/month.',
   'weekly.cta': 'Get SparkyDollar Plus',
   'weekly.tasksDone': 'tasks done',
   'weekly.earned': 'earned',
