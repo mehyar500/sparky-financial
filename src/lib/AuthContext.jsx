@@ -131,9 +131,9 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     // Sign out without deleting any account records or account-scoped drafts.
     queryClientInstance.clear();
-    await base44.auth.logout('/login');
     bindAccountStorage(null);
     setUser(null);
+    await base44.auth.logout('/login');
     setIsAuthenticated(false);
   };
 

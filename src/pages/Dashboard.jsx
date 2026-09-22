@@ -41,9 +41,8 @@ export default function Dashboard() {
     setChat(null);
   };
 
-  const confirmChange = async () => {
+  const confirmChange = () => {
     setChanging(true);
-    await touchPath(data.path.id, { status: 'paused', reason_paused: 'User wants different options' });
     navigate('/results');
   };
 

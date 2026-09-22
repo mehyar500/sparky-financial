@@ -1,6 +1,9 @@
 const enhancements = {
   en: {
     'ideas.new': 'New idea', 'language.auto': 'Auto', 'language.autoHint': 'Use my browser language',
+    'situation.flexible_home': 'I need flexible work I can do from home', 'situation.flexible_home.headline': 'Need flexible work from home?', 'situation.flexible_home.sub': "Let's find something that fits your schedule and space.",
+    'preview.choose': 'Choose one and build my plan',
+    'change.desc': 'Your current path and progress stay saved while you explore new options.',
     'online.aiPrompt': 'What would you like to do with ChatGPT or Claude?', 'online.aiHint': 'Pick what interests you. No coding required.',
     'online.ai1': 'Turn recordings into newsletters and social posts', 'online.ai2': 'Improve product listings for small online shops', 'online.ai3': 'Write FAQs and customer-reply templates for local businesses',
     'online.ai4': 'Organize spreadsheets and turn notes into useful documents', 'online.ai5': 'Create tailored lesson materials, reviewed by a human', 'online.ai6': 'Build simple no-code forms and admin workflows',
@@ -9,6 +12,9 @@ const enhancements = {
   },
   es: {
     'ideas.new': 'Nueva idea', 'language.auto': 'Auto', 'language.autoHint': 'Usar el idioma de mi navegador',
+    'situation.flexible_home': 'Necesito trabajo flexible desde casa', 'situation.flexible_home.headline': '¿Necesitas trabajo flexible desde casa?', 'situation.flexible_home.sub': 'Busquemos algo que encaje con tu horario y tu espacio.',
+    'preview.choose': 'Elegir una y crear mi plan',
+    'change.desc': 'Tu camino y progreso actuales quedan guardados mientras exploras opciones nuevas.',
     'online.aiPrompt': '¿Qué te gustaría hacer con ChatGPT o Claude?', 'online.aiHint': 'Elige lo que te interese. No necesitas programar.',
     'online.ai1': 'Convertir grabaciones en boletines y publicaciones', 'online.ai2': 'Mejorar descripciones de productos de pequeñas tiendas', 'online.ai3': 'Crear preguntas frecuentes y respuestas para negocios locales',
     'online.ai4': 'Organizar hojas de cálculo y convertir notas en documentos', 'online.ai5': 'Crear materiales educativos revisados por una persona', 'online.ai6': 'Crear formularios y procesos administrativos sin código',
@@ -17,6 +23,9 @@ const enhancements = {
   },
   pt: {
     'ideas.new': 'Nova ideia', 'language.auto': 'Auto', 'language.autoHint': 'Usar o idioma do meu navegador',
+    'situation.flexible_home': 'Preciso de trabalho flexível em casa', 'situation.flexible_home.headline': 'Precisa de trabalho flexível em casa?', 'situation.flexible_home.sub': 'Vamos encontrar algo que combine com seu horário e seu espaço.',
+    'preview.choose': 'Escolher uma e criar meu plano',
+    'change.desc': 'Seu caminho e progresso atuais ficam salvos enquanto você explora novas opções.',
     'online.aiPrompt': 'O que você gostaria de fazer com ChatGPT ou Claude?', 'online.aiHint': 'Escolha o que interessa. Não precisa programar.',
     'online.ai1': 'Transformar gravações em newsletters e publicações', 'online.ai2': 'Melhorar descrições de produtos de pequenas lojas', 'online.ai3': 'Criar perguntas frequentes e respostas para negócios locais',
     'online.ai4': 'Organizar planilhas e transformar notas em documentos', 'online.ai5': 'Criar materiais educativos revisados por uma pessoa', 'online.ai6': 'Criar formulários e processos administrativos sem código',

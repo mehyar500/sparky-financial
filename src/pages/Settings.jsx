@@ -33,10 +33,8 @@ export default function Settings() {
     }
   };
 
-  const confirmChange = async () => {
+  const confirmChange = () => {
     setChanging(true);
-    const path = await getActivePath();
-    if (path) await touchPath(path.id, { status: 'paused', reason_paused: 'User wants different options' });
     navigate('/results');
   };
 

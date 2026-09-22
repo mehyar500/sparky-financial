@@ -7,8 +7,8 @@ import PickList from '@/components/onboarding/PickList';
 import { getSession, saveSession } from '@/lib/onboardingState';
 import { useT } from '@/lib/i18n';
 
-const OPTIONS = ['laid_off', 'might_lose', 'extra_income', 'try_something'].map(id => ({ id, label: `situation.${id}` }));
-const EMOJI = { laid_off: '💔', might_lose: '😰', extra_income: '🐷', try_something: '🔮' };
+const OPTIONS = ['laid_off', 'might_lose', 'extra_income', 'flexible_home', 'try_something'].map(id => ({ id, label: `situation.${id}` }));
+const EMOJI = { laid_off: '💔', might_lose: '😰', extra_income: '🐷', flexible_home: '🏠', try_something: '🔮' };
 
 export default function OnboardingSituation() {
   const navigate = useNavigate();

@@ -41,7 +41,7 @@ export default function Results() {
 
   const isPaid = profile?.is_paid;
   const opt1 = recSet?.option_1_json || {}, opt2 = recSet?.option_2_json || {};
-  const open = num => isPaid ? navigate(`/explore?opt=${num}`) : startCheckout(profile?.id);
+  const open = num => navigate(`/explore?opt=${num}`);
 
   return <MobileShell>
     <div className="flex flex-col min-h-[680px] bg-[#183b3b]">

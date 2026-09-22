@@ -6,6 +6,7 @@ import WaveHeader from '@/components/WaveHeader';
 import { base44 } from '@/api/base44Client';
 import { getMyProfile, getActiveRecSet } from '@/lib/pathData';
 import { generateExploreDetail } from '@/lib/sparkyAI';
+import PaywallCTA from '@/components/results/PaywallCTA';
 import { useT } from '@/lib/i18n';
 
 export default function ExploreOption() {
@@ -13,23 +14,22 @@ export default function ExploreOption() {
   const { t } = useT();
   const num = new URLSearchParams(window.location.search).get('opt') === '2' ? 2 : 1;
   const other = num === 1 ? 2 : 1;
-  const [state, setState] = useState({ loading: true, option: null, detailLoading: false });
+  const [state, setState] = useState({ loading: true, option: null, profile: null, detailLoading: false });
 
   useEffect(() => { (async () => {
-    setState({ loading: true, option: null, detailLoading: false });
+    setState({ loading: true, option: null, profile: null, detailLoading: false });
     const [profile, recSet] = await Promise.all([getMyProfile(), getActiveRecSet()]);
-    if (!profile?.is_paid) { navigate('/results'); return; }
-    if (!recSet) { navigate('/results'); return; }
+    if (!profile || !recSet) { navigate('/results'); return; }
     const key = num === 1 ? 'option_1_json' : 'option_2_json';
     const option = recSet[key] || {};
     if (option.likely_challenges) {
-      setState({ loading: false, option, detailLoading: false });
+      setState({ loading: false, option, profile, detailLoading: false });
     } else {
-      setState({ loading: false, option, detailLoading: true });
+      setState({ loading: false, option, profile, detailLoading: true });
       const detail = await generateExploreDetail(option, profile);
       const merged = { ...option, ...detail };
       await base44.entities.RecommendationSet.update(recSet.id, { [key]: merged });
-      setState({ loading: false, option: merged, detailLoading: false });
+      setState({ loading: false, option: merged, profile, detailLoading: false });
     }
   })(); }, [num]);
 
@@ -87,8 +87,11 @@ export default function ExploreOption() {
         )}
 
         <div className="mt-auto pt-6 space-y-3">
-          <button onClick={() => navigate(`/explore?opt=${other}`)} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-3.5 font-bold text-sm hover:bg-[#7dd4d4] transition-colors">{t('explore.see', { n: other })}</button>
-          <button onClick={() => navigate('/time-to-pick')} className="w-full border border-[#5BC8C8] text-[#5BC8C8] rounded-full py-3.5 font-bold text-sm hover:bg-[#5BC8C8]/10 transition-colors">{t('explore.back')}</button>
+          {state.profile?.is_paid
+            ? <button onClick={() => navigate('/time-to-pick')} className="w-full bg-[#5BC8C8] text-[#183b3b] rounded-full py-3.5 font-bold text-sm hover:bg-[#7dd4d4] transition-colors">{t('preview.choose')}</button>
+            : <PaywallCTA profileId={state.profile?.id} />}
+          <button onClick={() => navigate(`/explore?opt=${other}`)} className="w-full border border-[#5BC8C8] text-[#5BC8C8] rounded-full py-3.5 font-bold text-sm hover:bg-[#5BC8C8]/10 transition-colors">{t('explore.see', { n: other })}</button>
+          <button onClick={() => navigate('/results')} className="w-full text-white/70 rounded-full py-2 font-bold text-sm">{t('explore.back')}</button>
         </div>
       </div>
     </div>

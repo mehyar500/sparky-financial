@@ -26,7 +26,7 @@ export default function TimeToPick() {
   const pick = num => {
     const option = num === 1 ? state.recSet.option_1_json : state.recSet.option_2_json;
     saveSession({ ...(getSession() || {}), chosen_option: { ...option, option_number: num } });
-    navigate('/confetti');
+    navigate('/action-plan');
   };
 
   const handleSuggestion = async suggestion => {
