@@ -2,6 +2,9 @@
   "name": "CoachNudge",
   "type": "object",
   "properties": {
+    "recipient_user_id": {
+      "type": "string"
+    },
     "profile_id": {
       "type": "string"
     },
@@ -34,5 +37,48 @@
     "kind",
     "nudge_date",
     "message"
-  ]
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$and": [
+        {
+          "data.recipient_user_id": "{{user.id}}"
+        },
+        {
+          "data.recipient_user_id": {
+            "$ne": null
+          }
+        }
+      ]
+    },
+    "update": {
+      "$and": [
+        {
+          "data.recipient_user_id": "{{user.id}}"
+        },
+        {
+          "data.recipient_user_id": {
+            "$ne": null
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$and": [
+        {
+          "data.recipient_user_id": "{{user.id}}"
+        },
+        {
+          "data.recipient_user_id": {
+            "$ne": null
+          }
+        }
+      ]
+    }
+  }
 }

@@ -1,6 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
+import { ACCOUNT_CHANGE_KEY, bindAccountStorage } from '@/lib/accountStorage';
+import { queryClientInstance } from '@/lib/query-client';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
 const AuthContext = createContext();
@@ -16,6 +18,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAppState();
+    const syncAccount = event => {
+      if (event.key === ACCOUNT_CHANGE_KEY) window.location.replace('/app');
+    };
+    window.addEventListener('storage', syncAccount);
+    return () => window.removeEventListener('storage', syncAccount);
   }, []);
 
   const checkAppState = async () => {
@@ -42,6 +49,8 @@ export const AuthProvider = ({ children }) => {
         if (appParams.token) {
           await checkUserAuth();
         } else {
+          bindAccountStorage(null);
+          queryClientInstance.clear();
           setIsLoadingAuth(false);
           setIsAuthenticated(false);
           setAuthChecked(true);
@@ -94,12 +103,17 @@ export const AuthProvider = ({ children }) => {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
+      bindAccountStorage(currentUser.id);
+      queryClientInstance.clear();
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
       setAuthChecked(true);
     } catch (error) {
       console.error('User auth check failed:', error);
+      bindAccountStorage(null);
+      queryClientInstance.clear();
+      setUser(null);
       setIsLoadingAuth(false);
       setIsAuthenticated(false);
       setAuthChecked(true);
@@ -114,17 +128,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = (shouldRedirect = true) => {
+  const logout = async () => {
+    // Sign out without deleting any account records or account-scoped drafts.
+    queryClientInstance.clear();
+    await base44.auth.logout('/login');
+    bindAccountStorage(null);
     setUser(null);
     setIsAuthenticated(false);
-    
-    if (shouldRedirect) {
-      // Use the SDK's logout method which handles token cleanup and redirect
-      base44.auth.logout(window.location.href);
-    } else {
-      // Just remove the token without redirect
-      base44.auth.logout();
-    }
   };
 
   const navigateToLogin = () => {

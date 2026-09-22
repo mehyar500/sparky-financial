@@ -1,21 +1,25 @@
-// Central onboarding state manager - stored in localStorage for persistence
+import { accountStorageKey } from '@/lib/accountStorage';
+// Draft answers are isolated to the authenticated account.
 export const STORAGE_KEY = 'firstdollar_session';
 
 export function getSession() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const key = accountStorageKey(STORAGE_KEY);
+    const raw = key ? localStorage.getItem(key) : null;
     return raw ? JSON.parse(raw) : null;
   } catch { return null; }
 }
 
 export function saveSession(data) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const key = accountStorageKey(STORAGE_KEY);
+    if (key) localStorage.setItem(key, JSON.stringify(data));
   } catch {}
 }
 
 export function clearSession() {
-  localStorage.removeItem(STORAGE_KEY);
+  const key = accountStorageKey(STORAGE_KEY);
+  if (key) localStorage.removeItem(key);
 }
 
 export const SITUATION_RESPONSES = {

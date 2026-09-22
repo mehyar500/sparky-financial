@@ -1,9 +1,10 @@
 import { base44 } from '@/api/base44Client';
 import { generateActionPlan } from '@/lib/sparkyAI';
+import { accountStorageKey } from '@/lib/accountStorage';
 
 export const ACTIVE_PATH_KEY = 'sparky_active_path_id';
-export function getActivePathId() { try { return localStorage.getItem(ACTIVE_PATH_KEY); } catch { return null; } }
-export function setActivePathId(id) { try { localStorage.setItem(ACTIVE_PATH_KEY, id); } catch {} }
+export function getActivePathId() { const key = accountStorageKey(ACTIVE_PATH_KEY); return key ? localStorage.getItem(key) : null; }
+export function setActivePathId(id) { const key = accountStorageKey(ACTIVE_PATH_KEY); if (key) localStorage.setItem(key, id); }
 
 export async function getMyProfile() {
   const user = await base44.auth.me();
@@ -37,7 +38,8 @@ export async function getAllPaths() {
 }
 
 export async function getTasks(pathId) {
-  return await base44.entities.ActionTask.filter({ income_path_id: pathId }, 'order');
+  const user = await base44.auth.me();
+  return await base44.entities.ActionTask.filter({ income_path_id: pathId, created_by_id: user.id }, 'order');
 }
 
 // Choose an option: generate a real AI plan, create IncomePath + tasks. Existing paths stay untouched.

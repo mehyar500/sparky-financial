@@ -6,7 +6,7 @@ import ChatInput from '@/components/ChatInput';
 import CoachMessage from '@/components/coach/CoachMessage';
 import { base44 } from '@/api/base44Client';
 import { useT } from '@/lib/i18n';
-import { getActivePath } from '@/lib/pathData';
+import { getActivePath, getMyProfile } from '@/lib/pathData';
 
 const AGENT = 'task_coach';
 
@@ -19,14 +19,18 @@ export default function TaskCoach() {
   const bottomRef = useRef(null);
 
   useEffect(() => { (async () => {
-    const path = await getActivePath(requestedId);
-    if (!path) { setPathMissing(true); return; }
+    const user = await base44.auth.me();
+    const [path, profile] = await Promise.all([getActivePath(requestedId), getMyProfile()]);
+    if (!path || !profile || path.created_by_id !== user.id || profile.created_by_id !== user.id) { setPathMissing(true); return; }
     const existing = await base44.agents.listConversations({ agent_name: AGENT });
-    const match = existing.find(c => c.metadata?.income_path_id === path.id);
+    // Do not reuse conversation context created before account isolation was enforced.
+    const match = existing.find(c => c.metadata?.income_path_id === path.id && c.metadata?.owner_user_id === user.id && c.metadata?.privacy_version === 2);
+    const metadata = { name: path.selected_option_json?.title || 'Task coach', description: `Work only on income_path_id ${path.id} and UserProfile ${profile.id}, belonging to authenticated account ${user.id}.`, income_path_id: path.id, profile_id: profile.id, owner_user_id: user.id, privacy_version: 2 };
     const conv = match
       ? await base44.agents.getConversation(match.id)
-      : await base44.agents.createConversation({ agent_name: AGENT, metadata: { name: path.selected_option_json?.title || 'Task coach', description: `Work only on income_path_id ${path.id}`, income_path_id: path.id } });
-    setConversation(conv);
+      : await base44.agents.createConversation({ agent_name: AGENT, metadata });
+    if (match) await base44.agents.updateConversation(conv.id, { metadata });
+    setConversation({ ...conv, metadata });
     setMessages(conv.messages || []);
   })(); }, []);
 

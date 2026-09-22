@@ -19,7 +19,7 @@ export default async function (req) {
     const all = await svc.entities.UserProfile.filter({ onboarding_complete: true }, '-updated_date', 200);
     // One message per person: keep only their most recently updated profile.
     const seen = new Set();
-    const profiles = all.filter(p => !seen.has(p.created_by_id) && seen.add(p.created_by_id)).filter(p => p.daily_nudges_on !== false);
+    const profiles = all.filter(p => p.created_by_id && !seen.has(p.created_by_id) && seen.add(p.created_by_id)).filter(p => p.daily_nudges_on !== false);
     const today = new Date().toLocaleDateString('en-CA', { timeZone: TZ });
     const results = [];
 
@@ -31,14 +31,14 @@ export default async function (req) {
       const already = await svc.entities.CoachNudge.filter({ profile_id: profile.id, kind, nudge_date: today }, '-created_date', 1);
       if (already.length) continue;
 
-      const tasks = await svc.entities.ActionTask.filter({ income_path_id: path.id }, 'order', 100);
+      const tasks = await svc.entities.ActionTask.filter({ income_path_id: path.id, created_by_id: profile.created_by_id }, 'order', 100);
       const pending = tasks.filter(t => ['not_started', 'in_progress', 'blocked'].includes(t.status));
       const focus = pending.find(t => t.status === 'in_progress') || pending[0];
       const done = tasks.length - pending.length;
 
-      const checkins = await svc.entities.CheckIn.filter({ income_path_id: path.id }, '-check_in_date', 3);
+      const checkins = await svc.entities.CheckIn.filter({ income_path_id: path.id, created_by_id: profile.created_by_id }, '-check_in_date', 3);
 
-      const previousNudges = await svc.entities.CoachNudge.filter({ income_path_id: path.id, kind }, '-created_date', 3);
+      const previousNudges = await svc.entities.CoachNudge.filter({ income_path_id: path.id, recipient_user_id: profile.created_by_id, kind }, '-created_date', 3);
       const priority = [focus, ...pending.filter(t => t.id !== focus?.id)].filter(Boolean).slice(0, 3);
       const brief = kind === 'morning'
         ? 'Write a short morning message tied to the real goal. List up to 3 priority tasks, most important first, each with one concrete small action. Fit the first action into a short available time block; use any known blocker to make it easier. Finish by asking them to open their coach for help. Do not ask for an email reply.'
@@ -64,6 +64,7 @@ Return only the message text.`;
       if (!text) continue;
 
       await svc.entities.CoachNudge.create({
+        recipient_user_id: profile.created_by_id,
         profile_id: profile.id,
         income_path_id: path.id,
         kind,
@@ -76,7 +77,7 @@ Return only the message text.`;
       const email = users[0]?.email;
       if (email) {
         const content = reminderEmail({ language: profile.language, kind, title: focus?.title, pathId: path.id, message: text });
-        await svc.integrations.Core.SendEmail({ from_name: 'SparkyDollar', to: email, subject: content.subject, text: content.text });
+        await svc.integrations.Core.SendEmail({ from_name: 'SparkyDollar', to: email, subject: content.subject, text: content.text, html: content.html });
       }
       results.push({ profile_id: profile.id, emailed: Boolean(email) });
     }
